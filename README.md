@@ -1,1 +1,1 @@
-# pushy-daemon
+# pushyd
