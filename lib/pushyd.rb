@@ -8,5 +8,6 @@ require "singleton"
 
 # Project's libs
 require_relative "pushyd/config"
+require_relative "pushyd/proxy"
 require_relative "pushyd/daemon"
 
