@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.name                         = "pushyd"
   spec.authors                      = ["Bruno MEDICI"]
   spec.email                        = "pushyd@bmconseil.com"
-  spec.description                  = ""
-  spec.summary                      = ""
+  spec.description                  = "(description to be written)"
+  spec.summary                      = "(summary to be written)"
   spec.homepage                     = "http://github.com/bmedici/pushyd"
   spec.licenses                     = ["MIT"]
   spec.date                         = Time.now.strftime("%Y-%m-%d")
@@ -33,7 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny"
   spec.add_runtime_dependency       "rest_client"
-  spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "terminal-table"
   # spec.add_runtime_dependency "newrelic_rpm"
 end
