@@ -1,36 +1,25 @@
 # common defaults
-defaults: &defaults
-  flag: 0
-  bus:
-    host: localhost
-    user: anonymous
-  log: "pushyd.log"
-  shout:
-    topic: pushyd
-    # keys:
-    #   - tic
-    #   - tac
-    #   - toe
-    #   - created
-    #   - updated
-    #   - deleted
-    #   - crunched
-  # rules:
-  #   proxy_tests:
-  #     title: All proxy tests messages
-  #     topic: proxy
-  #     routes: "proxy.#"
-  #     subscribe: false
-  #     #relay: http://requestb.in/1clzv7v1
-
-# env: dev
-development:
-  <<: *defaults
-  flag: 2
-  bus:
-    host: 127.0.0.1
-
-# env: prod
-production:
-  <<: *defaults
-  flag: 4
+flag: 0
+bus:
+  host: localhost
+  port: 5672
+  user: guest
+  pass: guest
+log: "pushyd.log"
+shout:
+  topic: pushyd
+  # keys:
+  #   - tic
+  #   - tac
+  #   - toe
+  #   - created
+  #   - updated
+  #   - deleted
+  #   - crunched
+# rules:
+#   proxy_tests:
+#     title: All proxy tests messages
+#     topic: proxy
+#     routes: "proxy.#"
+#     subscribe: false
+#     #relay: http://requestb.in/1clzv7v1
