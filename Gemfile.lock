@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pushyd (0.0.1)
+    pushyd (0.0.2)
       bunny
       chamber
       daemons
