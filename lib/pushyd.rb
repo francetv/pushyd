@@ -7,7 +7,6 @@ require "singleton"
 # require "newrelic_rpm"
 
 # Project's libs
-require_relative "pushyd/constants"
 require_relative "pushyd/config"
 require_relative "pushyd/daemon"
 
