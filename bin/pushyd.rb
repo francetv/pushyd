@@ -10,15 +10,18 @@ begin
 rescue LoadError
   raise "EXITING: some basic libs were not found"
 end
+include PushyDaemon
 
-# Guess app root
+
+# Handle configuration
 APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../")
-
-# Parse options and check compliance
-cmd_config = nil
-cmd_env = "production"
-cmd_dump = false
 begin
+  # Defaults
+  cmd_config = nil
+  cmd_env = "production"
+  cmd_dump = false
+
+  # Parse options and check compliance
   OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
     opts.on("-c", "--config CONFIGFILE")     { |config| cmd_config = File.expand_path(config)}
@@ -26,21 +29,25 @@ begin
     opts.on("-d", "--dump")                  { cmd_dump = true }
     opts.on("",   "--dev")                   { cmd_env = "development" }
   end.order!(ARGV)
+
+  # Build Chamber-based configuration from Gemspec with initial context
+  Config.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config
+
+  # Display final configuration
+  puts "--- #{Config.name} #{Config.version}"
+  puts "Environment    \t #{Config.env}"
+  puts "Config files   \t #{Config.files}"
+  puts
+  puts "Log file       \t #{Config[:log]}"
+  puts Config.dump if cmd_dump
+
 rescue OptionParser::InvalidOption => e
   abort "EXITING: option parser: #{e.message}"
+rescue PushyDaemon::ConfigParseError => e
+  abort "EXITING: ConfigParseError: #{e.message}"
+rescue Exception => e
+  abort "EXITING: Exception: #{e.message}"
 end
-
-
-# Build Chamber-based configuration from Gemspec with initial context
-Config.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config
-
-# Display final configuration
-puts "--- #{Config.name} #{Config.version}"
-puts "Environment    \t #{Config.env}"
-puts "Config files   \t #{Config.files}"
-puts
-puts "Log file       \t #{Config[:log]}"
-puts Config.dump if cmd_dump
 
 
 # Run daemon
