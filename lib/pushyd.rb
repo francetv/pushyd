@@ -8,6 +8,7 @@ require "singleton"
 # Project libs
 require_relative "pushyd/config"
 require_relative "pushyd/constants"
+require_relative "pushyd/pushy_logger"
 require_relative "pushyd/endpoint"
 require_relative "pushyd/proxy"
 require_relative "pushyd/shouter"
