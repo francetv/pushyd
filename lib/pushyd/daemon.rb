@@ -5,11 +5,6 @@ module PushyDaemon
       # Create a new proxy
       p = Proxy.new(logger)
 
-      # Prepare subscriptions
-      p.prepare
-
-      # Make it listen
-
       # Dump config table
       puts p.table.to_s
 

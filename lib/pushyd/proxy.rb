@@ -22,20 +22,20 @@ module PushyDaemon
       @table.headings = ["queue binding", "topic", "route", "relay", "title"]
       @table.align_column(5, :right)
 
-    def prepare
       # Start connexion to RabbitMQ and create channel
       conn = connect Config.bus
       @channel = conn.create_channel
       info "connected on a channel"
 
-      # Check rules
-      unless (Config.rules.is_a? Enumerable) && !Config.rules.empty?
+      # Check config
+      config_rules = Config[:rules]
+      unless (config_rules.is_a? Enumerable) && !config_rules.empty?
         abort "prepare: empty [rules] section"
       end
       info "found rules: #{config_rules.keys.join(', ')}"
 
       # Subsribe for each and every rule/route
-      Config.rules.each do |name, rule|
+      config_rules.each do |name, rule|
         rule[:name] = name
         channel_subscribe rule
         #abort "prepare: OK"
@@ -44,11 +44,6 @@ module PushyDaemon
       # Send config table to logs
       info "dumping configuration\n#{@table.to_s}"
 
-    def main
-      loop do
-        info "ping"
-        sleep(1)
-      end
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       abort "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
@@ -59,7 +54,8 @@ module PushyDaemon
     def handle_message rule, delivery_info, metadata, payload
       # Prepare data
       rule_name = rule[:name]
-      msg_topic = delivery_info.exchange
+      rule_relay = rule[:relay]
+      msg_exchange = delivery_info.exchange
       msg_rkey = delivery_info.routing_key.force_encoding('UTF-8')
       msg_headers = metadata.headers || {}
 
@@ -78,9 +74,8 @@ module PushyDaemon
         }
 
       # Build notification payload
-      body = {
-        # received: msg_topic,
-        exchange: msg_topic,
+      post_body = {
+        exchange: msg_exchange,
         route: msg_rkey,
         sent_at: msg_headers['sent_at'],
         sent_by: msg_headers['sent_by'],
@@ -88,12 +83,12 @@ module PushyDaemon
         }
 
       # Propagate data if needed
-      #propagate rule[:relay], pretty_body
+      propagate rule_relay, post_body if rule_relay
     end
 
-    def propagate url, body
+    def propagate relay_url, post_body
       # Nothing more to do if no relay
-      return if url.nil? || url.empty?
+      return if relay_url.nil? || relay_url.empty?
       id = SecureRandom.random_number(100)
 
       # Log message details
@@ -103,7 +98,7 @@ module PushyDaemon
         body: post_body
 
       # Push message to URL
-      response = RestClient.post url.to_s, body, :content_type => :json
+      response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json
       info "#{id}: #{response.body}"
 
       rescue Exception => e
