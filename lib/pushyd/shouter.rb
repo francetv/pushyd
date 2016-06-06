@@ -82,13 +82,9 @@ module PushyDaemon
 
       # Prepare key and data
       routing_key = keys.unshift(exchange_name).join('.')
-      # payload = data
 
       # Announce shout
       message way: WAY_OUT, exchange: exchange_name, key: routing_key, body: nil, attrs: {}
-
-      # header "SHOUT", ">", exchange_name, routing_key
-      # puts JSON.pretty_generate(body) unless body.empty?
 
       # Publish
       @exchange.publish(body.to_json,

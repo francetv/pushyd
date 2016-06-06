@@ -26,13 +26,13 @@ module PushyDaemon
       # Start connexion to RabbitMQ and create channel
       conn = connect Config.bus
       @channel = conn.create_channel
-      info "prepare: connected on a channel"
+      info "connected on a channel"
 
       # Check rules
       unless (Config.rules.is_a? Enumerable) && !Config.rules.empty?
         abort "prepare: empty [rules] section"
       end
-      info "prepare: found [#{Config.rules.size}] rules"
+      info "found rules: #{config_rules.keys.join(', ')}"
 
       # Subsribe for each and every rule/route
       Config.rules.each do |name, rule|
@@ -42,44 +42,18 @@ module PushyDaemon
       end
 
       # Send config table to logs
-      info "prepare: dumping configuration\n#{@table.to_s}"
-    end
+      info "dumping configuration\n#{@table.to_s}"
 
     def main
       loop do
         info "ping"
         sleep(1)
       end
+    rescue Bunny::TCPConnectionFailedForAllHosts => e
+      abort "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
 
   private
-
-
-      # Bind each route from this topic-exchange
-      topic_exchange = channel_exchange(rule_topic)
-      rule_routes.each do |route|
-        # Bind exchange to queue
-        queue.bind topic_exchange, routing_key: route
-        info "subscribe: bind: \t[#{rule_topic}] \t[#{route}] \t> [#{rule_queue}]"
-
-        # Add row to config table
-        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s ]
-      end
-
-      # Subscribe to our new queue
-      queue.subscribe(block: false, manual_ack: PROXY_USE_ACK, message_max: PROXY_MESSAGE_MAX) do |delivery_info, metadata, payload|
-
-        # Handle the message
-        handle_message rule[:name], rule, delivery_info, metadata, payload
-
-      end
-
-    rescue Bunny::PreconditionFailed => e
-      abort "subscribe: PreconditionFailed: [#{rule_topic}] code(#{e.channel_close.reply_code}) message(#{e.channel_close.reply_text})"
-    rescue Exception => e
-      abort "subscribe: unhandled (#{e.inspect})"
-
-    end
 
     # Handle the reception of a message on a queue
     def handle_message rule, delivery_info, metadata, payload
@@ -93,25 +67,25 @@ module PushyDaemon
       data = parse payload, metadata.content_type  #, rule
 
       # Announce match
-      header rule_name, "<", msg_topic, msg_rkey
+      message way: WAY_IN,
+        exchange: msg_exchange,
+        key: msg_rkey,
+        body: data,
+        attrs: {
+          'rule' => rule_name,
+          'app-id' => metadata.app_id,
+          'content-type' => metadata.content_type,
+        }
 
       # Build notification payload
       body = {
         # received: msg_topic,
         exchange: msg_topic,
         route: msg_rkey,
-        #headers: msg_headers,
         sent_at: msg_headers['sent_at'],
         sent_by: msg_headers['sent_by'],
         data: data,
         }
-      pretty_body = JSON.pretty_generate(body)
-
-      # Dump body data
-      puts "RULE: #{rule.inspect}"
-      puts "APP-ID: #{metadata.app_id}"
-      puts "CONTENT-TYPE: #{metadata.content_type}"
-      puts pretty_body
 
       # Propagate data if needed
       #propagate rule[:relay], pretty_body
@@ -120,11 +94,17 @@ module PushyDaemon
     def propagate url, body
       # Nothing more to do if no relay
       return if url.nil? || url.empty?
+      id = SecureRandom.random_number(100)
+
+      # Log message details
+      message way: WAY_POST,
+        exchange: id,
+        key: relay_url,
+        body: post_body
 
       # Push message to URL
-      puts "> POST #{url}"
       response = RestClient.post url.to_s, body, :content_type => :json
-      puts "< #{response.body}"
+      info "#{id}: #{response.body}"
 
       rescue Exception => e
         abort "propagate: #{e.message}"
