@@ -11,10 +11,9 @@ module PushyDaemon
 
     attr_accessor :table
 
-    def initialize(logger)
+    def initialize
       # Init
       @exchanges = {}
-      @logger = logger
 
       # Init ASCII table
       @table = Terminal::Table.new
@@ -30,7 +29,7 @@ module PushyDaemon
       # Check config
       config_rules = Config[:rules]
       unless (config_rules.is_a? Enumerable) && !config_rules.empty?
-        abort "prepare: empty [rules] section"
+        error "prepare: empty [rules] section"
       end
       info "found rules: #{config_rules.keys.join(', ')}"
 
@@ -45,7 +44,7 @@ module PushyDaemon
       info "dumping configuration\n#{@table.to_s}"
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
-      abort "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
+      error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
 
   private
@@ -102,7 +101,7 @@ module PushyDaemon
       info "#{id}: #{response.body}"
 
       rescue Exception => e
-        abort "propagate: #{e.message}"
+        error "propagate: #{e.message}"
 
     end
 
@@ -128,7 +127,7 @@ module PushyDaemon
 
       # Handle body parse errors
       rescue Encoding::UndefinedConversionError => e
-        abort "parse: JSON PARSE ERROR: #{e.inspect}"
+        error "parse: JSON PARSE ERROR: #{e.inspect}"
         return {}
       end
 
