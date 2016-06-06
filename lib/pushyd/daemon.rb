@@ -13,8 +13,11 @@ module PushyDaemon
       # Dump config table
       puts p.table.to_s
 
+      # Create a new shouter
+      s = Shouter.new(logger)
+
       # Start infinite loop
-      p.main
+      s.shout
     end
 
   end
