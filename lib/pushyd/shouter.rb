@@ -19,12 +19,12 @@ module PushyDaemon
       @keys = []
 
       # Start connexion to RabbitMQ and create channel
-      conn = connect Config.bus
+      conn = connect Conf.bus
       @channel = conn.create_channel
       info "connected on a channel"
 
       # Check config
-      config_shout = Config[:shout]
+      config_shout = Conf[:shout]
       if (config_shout.is_a? Enumerable) && !config_shout.empty?
         @keys = config_shout[:keys] if config_shout[:keys].is_a? Array
         @topic = config_shout[:topic]
@@ -75,7 +75,7 @@ module PushyDaemon
       # Add timestamp
       headers = {
         sent_at: DateTime.now.iso8601,
-        sent_by: Config.name
+        sent_by: Conf.name
         }
       exchange_name = @exchange.name
 
@@ -89,7 +89,7 @@ module PushyDaemon
       @exchange.publish(body.to_json,
         routing_key: routing_key,
         headers: headers,
-        app_id: Config.name,
+        app_id: Conf.name,
         content_type: "application/json",
         )
 

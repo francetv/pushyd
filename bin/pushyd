@@ -31,15 +31,15 @@ begin
   end.order!(ARGV)
 
   # Build Chamber-based configuration from Gemspec with initial context
-  Config.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config
+  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config
 
   # Display final configuration
-  puts "--- #{Config.name} #{Config.version}"
-  puts "Environment    \t #{Config.env}"
-  puts "Config files   \t #{Config.files}"
+  puts "--- #{Conf.name} #{Conf.version}"
+  puts "Environment    \t #{Conf.env}"
+  puts "Config files   \t #{Conf.files}"
   puts
-  puts "Log file       \t #{Config[:log]}"
-  puts Config.dump if cmd_dump
+  puts "Log file       \t #{Conf[:log]}"
+  puts Conf.dump if cmd_dump
 
 rescue OptionParser::InvalidOption => e
   abort "EXITING: option parser: #{e.message}"

@@ -23,12 +23,12 @@ module PushyDaemon
       @table.align_column(5, :right)
 
       # Start connexion to RabbitMQ and create channel
-      conn = connect Config.bus
+      conn = connect Conf.bus
       @channel = conn.create_channel
       info "connected on a channel"
 
       # Check config
-      config_rules = Config[:rules]
+      config_rules = Conf[:rules]
       unless (config_rules.is_a? Enumerable) && !config_rules.empty?
         error "prepare: empty [rules] section"
       end

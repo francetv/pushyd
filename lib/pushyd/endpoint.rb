@@ -12,7 +12,7 @@ module PushyDaemon
 
     def initialize
       # Prepare logger (may be NIL > won't output anything)
-      logfile = Config[:log]
+      logfile = Conf[:log]
 
       # Create the logger
       @logger = PushyLogger.new(logfile, LOG_ROTATION)
@@ -95,7 +95,7 @@ module PushyDaemon
       rule_name = rule[:name].to_s
       rule_topic = rule[:topic].to_s
       rule_routes = rule[:routes].to_s.split(' ')
-      rule_queue = "#{Config.name}-#{PROXY_SCOPE}-#{rule[:name]}"
+      rule_queue = "#{Conf.name}-#{PROXY_SCOPE}-#{rule[:name]}"
       raise PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
       raise PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking routes" if rule_routes.empty?
 
