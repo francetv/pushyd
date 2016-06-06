@@ -13,9 +13,8 @@ module PushyDaemon
 
     attr_accessor :table
 
-    def initialize(logger)
+    def initialize
       # Init
-      @logger = logger
       @keys = []
 
       # Start connexion to RabbitMQ and create channel
@@ -32,7 +31,7 @@ module PushyDaemon
         info "found topic: #{@topic}"
         info "found keys: #{@keys.join(', ')}"
       else
-        abort "prepare: empty [shout] section"
+        error "prepare: empty [shout] section"
       end
 
       # Create exchange
@@ -44,7 +43,7 @@ module PushyDaemon
       # end
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
-      abort "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
+      error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
 
     def shout
