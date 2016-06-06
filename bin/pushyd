@@ -64,13 +64,7 @@ Daemons.run_proc('pushy-daemon', run_options) do
   puts "--- loading code and logger"
   require_relative "../lib/pushyd"
 
-  # Prepare logger
-  if Config[:log]
-    logger = Logger.new(Config[:log])
-    logger.info('Daemon starting')
-  end
-
   # Start daemon
   puts "--- starting"
-  PushyDaemon::Daemon.run(logger)
+  PushyDaemon::Daemon.run
 end
