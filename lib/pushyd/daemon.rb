@@ -13,6 +13,15 @@ module PushyDaemon
 
       # Start infinite loop
       s.shout
+
+    rescue Errno::EACCES => e
+      #logger.error "ABORT #{e.class}: #{e.message}"
+      abort "ABORT #{e.class}: #{e.message}"
+
+    rescue Exception => e
+      #logger.error "ABORT #{e.class}: #{e.message}"
+      abort "ABORT #{e.class}: #{e.message}"
+
     end
 
   end
