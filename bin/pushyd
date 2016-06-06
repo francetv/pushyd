@@ -6,7 +6,7 @@ begin
   require "optparse"
   require 'daemons'
   require 'logger'
-  require_relative "../lib/pushyd/config"
+  require_relative "../lib/pushyd/conf"
 rescue LoadError
   raise "EXITING: some basic libs were not found"
 end

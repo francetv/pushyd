@@ -5,7 +5,7 @@ module PushyDaemon
   class ConfigMissingParameter    < StandardError; end
   class ConfigParseError          < StandardError; end
 
-  class Config
+  class Conf
     extend Chamber
 
     class << self
