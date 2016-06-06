@@ -30,11 +30,9 @@ Gem::Specification.new do |spec|
   # Runtime dependencies
   spec.add_runtime_dependency       "daemons"
   spec.add_runtime_dependency       "chamber"
-  spec.add_runtime_dependency       "yaml"
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny"
   spec.add_runtime_dependency       "rest_client"
   spec.add_runtime_dependency       "terminal-table"
-  spec.add_runtime_dependency       "securerandom"
   # spec.add_runtime_dependency "newrelic_rpm"
 end
