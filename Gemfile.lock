@@ -10,7 +10,7 @@ PATH
       terminal-table
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
     amq-protocol (2.0.1)
