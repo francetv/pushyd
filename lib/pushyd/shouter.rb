@@ -15,6 +15,7 @@ module PushyDaemon
 
     def initialize
       # Init
+      super
       @keys = []
 
       # Start connexion to RabbitMQ and create channel
@@ -65,7 +66,6 @@ module PushyDaemon
 
     rescue Interrupt => e
       @channel.close
-      # conn.close
       raise PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
     end
 

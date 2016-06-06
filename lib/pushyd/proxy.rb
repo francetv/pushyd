@@ -13,6 +13,7 @@ module PushyDaemon
 
     def initialize
       # Init
+      super
       @exchanges = {}
 
       # Init ASCII table
