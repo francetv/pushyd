@@ -18,20 +18,22 @@ APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../")
 begin
   # Defaults
   cmd_config = nil
+  cmd_logfile = nil
   cmd_env = "production"
   cmd_dump = false
 
   # Parse options and check compliance
   OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
-    opts.on("-c", "--config CONFIGFILE")     { |config| cmd_config = File.expand_path(config)}
+    opts.on("-l", "--log LOGFILE")           { |path| cmd_logfile = File.expand_path(path)}
+    opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path)}
     opts.on("-e", "--environment ENV")       { |env| cmd_env = env }
     opts.on("-d", "--dump")                  { cmd_dump = true }
     opts.on("",   "--dev")                   { cmd_env = "development" }
   end.order!(ARGV)
 
   # Build Chamber-based configuration from Gemspec with initial context
-  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config
+  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, log: cmd_logfile
 
   # Display final configuration
   puts "--- #{Conf.name} #{Conf.version}"

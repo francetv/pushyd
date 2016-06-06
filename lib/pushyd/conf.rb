@@ -43,6 +43,9 @@ module PushyDaemon
       # Try to access any key to force parsing of the files
       self[:dummy]
 
+      # Override some values
+      self[:log] = args[:log].to_s if args[:log]
+
     rescue Psych::SyntaxError => e
       raise PushyDaemon::ConfigParseError, e.message
 
