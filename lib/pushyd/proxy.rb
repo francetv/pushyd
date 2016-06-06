@@ -1,5 +1,4 @@
 require 'rest_client'
-require 'bunny'
 require 'yaml'
 require 'json'
 require 'terminal-table'
@@ -12,14 +11,16 @@ PROXY_SCOPE         = "dev"
 # QUEUE_HOST = `hostname`.to_s.chomp
 # SEPARATOR  = "="*160
 # ACK_PERCENT = 50
-
-
 module PushyDaemon
-  class Proxy
+
+  # class ProxyConnexionContext    < StandardError; end
+
+  class Proxy < Endpoint
 
     attr_accessor :table
 
     def initialize(logger)
+      # Init
       @exchanges = {}
       @logger = logger
 
@@ -28,7 +29,6 @@ module PushyDaemon
       @table.title = "Propagation rules"
       @table.headings = ["queue binding", "topic", "route", "relay", "title"]
       @table.align_column(5, :right)
-    end
 
     def prepare
       # Start connexion to RabbitMQ and create channel
@@ -62,57 +62,6 @@ module PushyDaemon
 
   private
 
-    def abort message
-      @logger.error "ABORT: #{message}"
-      raise "ABORT: #{message}"
-    end
-
-    def info message
-      @logger.info message
-    end
-
-    def dump_rules rules
-
-    end
-
-    # Start connexion to RabbitMQ
-    def connect busconf
-      abort "connect: bus host/port not found" unless busconf.is_a? Hash
-
-      puts "connecting to #{busconf[:host]} port #{busconf[:port]}"
-      conn = Bunny.new host: (busconf[:host].to_s || "localhost").to_s,
-        port: busconf[:port].to_i,
-        user: busconf[:user].to_s,
-        pass: busconf[:pass].to_s,
-        heartbeat: :server
-      conn.start
-    rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
-      abort "connect: error connecting to RabbitMQ (#{e.class})"
-    rescue Exception => e
-      abort "connect: unknow connection error (#{e.inspect})"
-    else
-      return conn
-    end
-
-    # Declare or return the exchange for this topic
-    def channel_exchange topic
-      @exchanges ||= {}
-      @exchanges[topic] ||= @channel.topic(topic, durable: true, persistent: true)
-    end
-
-    # Subscribe to interesting topic/routes and bind a listenner
-    def channel_subscribe rule
-      # Check information
-      rule_name = rule[:name].to_s
-      rule_topic = rule[:topic].to_s
-      rule_routes = rule[:routes].to_s.split(' ')
-      rule_queue = "#{Config.name}-#{PROXY_SCOPE}-#{rule[:name]}"
-      abort "subscribe: rule [#{rule_name}] lacking topic" unless rule_topic
-      abort "subscribe: rule [#{rule_name}] lacking routes" if rule_routes.empty?
-
-      # Create queue for this rule (remove it beforehand)
-      #conn.create_channel.queue_delete(rule_queue_name)
-      queue = @channel.queue(rule_queue, auto_delete: false, durable: true)
 
       # Bind each route from this topic-exchange
       topic_exchange = channel_exchange(rule_topic)
@@ -220,49 +169,3 @@ module PushyDaemon
 
 end
 
-
-# def prepare_shout
-
-
-# # Prepare shout config
-# shout_config = config[:shout]
-# shout_exchange = nil
-# shout_keys = []
-
-# if shout_config.is_a? Hash
-#   shout_exchange = topic(channel, shout_config[:topic])
-#   shout_keys = shout_config[:keys] if shout_config[:keys].is_a? Array
-# end
-
-# end
-
-# def endlessly
-#   # Endless loop with shout config
-#   begin
-#     loop do
-#       if shout_exchange
-#         random_string = SecureRandom.hex
-#         random_key = shout_keys.sample || "random"
-#         shout shout_exchange, [:ping, random_key, random_string], {}
-#       end
-#       sleep 1
-#     end
-#   rescue AMQ::Protocol::EmptyResponseError => e
-#     abort "ERROR: AMQ::Protocol::EmptyResponseError (#{e.inspect})"
-#   rescue Bunny::TCPConnectionFailedForAllHosts => e
-#     abort "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
-#   rescue Bunny::ChannelAlreadyClosed => e
-#     abort "ERROR: channel unexpectedly closed (#{e.inspect})"
-#     # sleep 1
-#     # retry
-#   rescue Bunny::PreconditionFailed => e
-#     abort "ERROR: precondition failed (#{e.inspect})"
-#   rescue Interrupt => e
-#     channel.close
-#     conn.close
-#     abort "QUITTING"
-#   end
-# end
-
-# Dump configuration
-# Hashie.symbolize_keys! config
