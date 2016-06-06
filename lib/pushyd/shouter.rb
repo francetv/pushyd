@@ -39,10 +39,6 @@ module PushyDaemon
       raise PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
 
-      # if shout_config.is_a? Hash
-      #   shout_keys = shout_config[:keys] if config_shout[:keys].is_a? Array
-      # end
-
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
@@ -72,14 +68,14 @@ module PushyDaemon
   private
 
     def channel_shout keys, body = {}
-      # Add timestamp
+      # Prepare headers
       headers = {
         sent_at: DateTime.now.iso8601,
         sent_by: Conf.name
         }
-      exchange_name = @exchange.name
 
-      # Prepare key and data
+      # Prepare exchange_name and routing_key
+      exchange_name = @exchange.name
       routing_key = keys.unshift(exchange_name).join('.')
 
       # Announce shout
@@ -97,4 +93,3 @@ module PushyDaemon
 
   end
 end
-

@@ -4,9 +4,6 @@ require 'json'
 require 'terminal-table'
 
 module PushyDaemon
-
-  # class ProxyConnexionContext    < StandardError; end
-
   class Proxy < Endpoint
 
     attr_accessor :table
@@ -118,10 +115,8 @@ module PushyDaemon
           #   data = payload_extract(payload, fields)
           #   data_source = "extract #{fields.inspect} #{data.keys.count}k"
           return JSON.parse utf8payload
-
         when "text/plain"
           return utf8payload.to_s
-
         else
           return utf8payload
       end
@@ -133,6 +128,4 @@ module PushyDaemon
       end
 
     end
-
 end
-

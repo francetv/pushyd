@@ -19,5 +19,3 @@ LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 LOG_ROTATION            = "daily"
 
-
-# Constants: shouter
