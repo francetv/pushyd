@@ -1,12 +1,6 @@
 require 'bunny'
 require 'securerandom'
 
-
-# Constants
-PROXY_MESSAGE_MAX   = 1
-PROXY_USE_ACK       = false
-PROXY_SCOPE         = "dev"
-
 module PushyDaemon
 
   class EndpointConnexionContext    < StandardError; end

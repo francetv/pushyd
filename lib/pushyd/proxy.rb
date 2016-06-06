@@ -3,14 +3,6 @@ require 'yaml'
 require 'json'
 require 'terminal-table'
 
-# Constants
-PROXY_MESSAGE_MAX   = 1
-PROXY_USE_ACK       = false
-PROXY_SCOPE         = "dev"
-# PROXY_IDENT = "proxy"
-# QUEUE_HOST = `hostname`.to_s.chomp
-# SEPARATOR  = "="*160
-# ACK_PERCENT = 50
 module PushyDaemon
 
   # class ProxyConnexionContext    < StandardError; end
