@@ -1,15 +1,15 @@
 module PushyDaemon
   class Daemon
 
-    def self.run(logger)
+    def self.run
       # Create a new proxy
-      p = Proxy.new(logger)
+      p = Proxy.new
 
       # Dump config table
       puts p.table.to_s
 
       # Create a new shouter
-      s = Shouter.new(logger)
+      s = Shouter.new
 
       # Start infinite loop
       s.shout

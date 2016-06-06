@@ -10,27 +10,33 @@ module PushyDaemon
 
   class Endpoint
 
-    def initialize(logger)
-      @logger = logger
+    def initialize
+      # Prepare logger (may be NIL > won't output anything)
+      logfile = Config[:log]
+
+      # Create the logger
+      @logger = PushyLogger.new(logfile, LOG_ROTATION)
+      @logger.add Logger::INFO, "starting #{self.class.name.to_s}"
     end
 
   protected
 
-    def abort message
-      @logger.error "ABORT #{self.class}: #{message}"
-      raise "ABORT #{self.class}: #{message}"
+    def error message
+      @logger.add Logger::ERROR, "#{self.class}: #{message}"
+      #raise "ABORT #{self.class}: #{message}"
     end
 
     def info message
-      @logger.info "#{self.class}: #{message}"
+      @logger.add Logger::INFO, "#{self.class}: #{message}"
     end
 
     def message params = {}
       # Indenting
-      indent = " " * (params[:way].length)
+      #indent = " " * (params[:way].length)
+      lines = []
 
       # Header
-      @logger.info sprintf(
+      message = sprintf(
         "%3s %-15s %s",
         params[:way],
         params[:exchange],
@@ -39,17 +45,22 @@ module PushyDaemon
 
       # Attributes
       if (params[:attrs].is_a? Hash)
+        # lines.merge params[:attrs]
         params[:attrs].each do |name, value|
-          @logger.info sprintf("%s %-15s %s", indent, name, value)
+          lines << sprintf("%-15s %s", name, value)
         end
       end
 
       # Body (split in lines to log them separately)
       unless (params[:body].nil? || params[:body].empty?)
         JSON.pretty_generate(params[:body]).each_line do |line|
-          @logger.info sprintf("%s %s", indent, line.rstrip)
+          lines << line.rstrip
         end
       end
+
+      # Send the info
+      @logger.add Logger::INFO, message, lines
+      # @logger.log_info message, lines
     end
 
     # Start connexion to RabbitMQ
