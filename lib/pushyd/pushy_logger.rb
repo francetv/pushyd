@@ -25,12 +25,10 @@ class PushyLogger < Logger
   def add level, message, lines = {}
     level ||= Logger::DEBUG
 
-    prefix = "   "
-
     if lines.is_a? Hash
-      output = build_from_hash prefix, lines
+      output = build_from_hash lines
     elsif lines.is_a? Array
-      output = build_from_array prefix, lines
+      output = build_from_array lines
     else
       output = []
     end
@@ -48,15 +46,15 @@ protected
     line.to_s.rstrip.strip[0..LOG_TRIM_LINE]
   end
 
-  def build_from_array prefix, lines
+  def build_from_array lines
     lines.map do |value|
-      "#{prefix}#{trim_line(value)}"
+      "#{LOG_INDENT}#{trim_line(value)}"
     end
   end
 
-  def build_from_hash prefix, lines
+  def build_from_hash lines
     lines.map do |name, value|
-      "#{prefix}#{name}: #{trim_line(value)}"
+      "#{LOG_INDENT}#{name}: #{trim_line(value)}"
     end
   end
 

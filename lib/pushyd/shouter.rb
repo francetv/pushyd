@@ -87,7 +87,6 @@ module PushyDaemon
         app_id: Conf.name,
         content_type: "application/json",
         )
-
     end
 
   end
