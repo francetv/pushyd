@@ -1,5 +1,5 @@
 require 'bunny'
-require 'securerandom'
+require "securerandom"
 
 module PushyDaemon
   class EndpointConnexionContext    < StandardError; end
@@ -25,7 +25,6 @@ module PushyDaemon
 
     def error message, lines = {}
       @logger.add Logger::ERROR, "#{self.class}: #{message}", lines
-      #raise "ABORT #{self.class}: #{message}"
     end
 
     def info message, lines = {}
@@ -34,7 +33,6 @@ module PushyDaemon
 
     def message params = {}
       # Indenting
-      #indent = " " * (params[:way].length)
       lines = []
 
       # Header

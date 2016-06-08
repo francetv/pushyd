@@ -18,7 +18,7 @@ module PushyDaemon
       loop do
       end
 
-    rescue Errno::EACCES, Exception => e
+    rescue Errno::EACCES, StandardError => e
       abort "EXITING #{e.class}: #{e.message}"
     end
 

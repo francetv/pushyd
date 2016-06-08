@@ -36,7 +36,7 @@ module PushyDaemon
       # Create exchange
       fail PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
-      info "initialized with parameters:", {topic: @topic, period: @period, keys: @keys}
+      info "initialized with parameters:", { topic: @topic, period: @period, keys: @keys }
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
@@ -69,7 +69,7 @@ module PushyDaemon
       # Prepare headers
       headers = {
         sent_at: DateTime.now.iso8601,
-        sent_by: Conf.name
+        sent_by: Conf.name,
         }
 
       # Prepare exchange_name and routing_key
