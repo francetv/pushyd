@@ -4,7 +4,7 @@ pushyd
 [![Gem Version](https://badge.fury.io/rb/pushyd.svg)](http://badge.fury.io/rb/pushyd)
 [![Code Climate](https://codeclimate.com/github/bmedici/pushyd/badges/gpa.svg)](https://codeclimate.com/github/bmedici/pushyd)
 [![Test Coverage](https://codeclimate.com/github/bmedici/pushyd/badges/coverage.svg)](https://codeclimate.com/github/bmedici/pushyd/coverage)
-[ ![Codeship](https://codeship.com/projects/46492fd0-00a4-0134-6639-66759d382560/status?branch=master)](https://codeship.com/projects/153245)
+[ ![Codeship](https://codeship.com/projects/72fcb0f0-0fa7-0134-fb73-16f75abdb9e2/status?branch=master)](https://codeship.com/projects/156725)
 
 This is a basic proxy listenning to a RabbitMQ bus, and repeating selected messages in POST requests when matching filters
 
