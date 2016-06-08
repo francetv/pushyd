@@ -39,8 +39,7 @@ begin
   puts "--- #{Conf.name} #{Conf.version}"
   puts "Environment    \t #{Conf.env}"
   puts "Config files   \t #{Conf.files}"
-  puts
-  puts "Log file       \t #{Conf[:log]}"
+  puts "Loging to file \t #{Conf[:log]}"
   puts Conf.dump if cmd_dump
 
 rescue OptionParser::InvalidOption => e
@@ -55,9 +54,6 @@ end
 # Run daemon
 run_options = {
   ontop: false,
-  # :dir_mode   => :normal,
-  # :dir        => File.join(root, 'amine.log'),
-  # :log_output => true,
   :backtrace  => true,
   :multiple   => false
   }
@@ -67,6 +63,6 @@ Daemons.run_proc('pushy-daemon', run_options) do
   require_relative "../lib/pushyd"
 
   # Start daemon
-  puts "--- starting"
+  puts "--- starting daemon"
   PushyDaemon::Daemon.run
 end
