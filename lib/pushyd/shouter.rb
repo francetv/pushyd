@@ -34,7 +34,7 @@ module PushyDaemon
       info "channel connected"
 
       # Create exchange
-      raise PushyDaemon::EndpointTopicContext unless @topic
+      fail PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
       info "initialized with parameters:", {topic: @topic, period: @period, keys: @keys}
 
@@ -53,14 +53,14 @@ module PushyDaemon
         sleep @period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
-      raise PushyDaemon::ShouterResponseError, "#{e.class} (#{e.inspect})"
+      fail PushyDaemon::ShouterResponseError, "#{e.class} (#{e.inspect})"
     rescue Bunny::ChannelAlreadyClosed => e
-      raise PushyDaemon::ShouterChannelClosed, "#{e.class} (#{e.inspect})"
+      fail PushyDaemon::ShouterChannelClosed, "#{e.class} (#{e.inspect})"
     rescue Bunny::PreconditionFailed => e
-      raise PushyDaemon::ShouterPreconditionFailed, "#{e.class} (#{e.inspect})"
+      fail PushyDaemon::ShouterPreconditionFailed, "#{e.class} (#{e.inspect})"
     rescue Interrupt => e
       @channel.close
-      raise PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
+      fail PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
     end
 
   private

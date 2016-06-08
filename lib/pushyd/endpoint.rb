@@ -68,7 +68,7 @@ module PushyDaemon
 
     # Start connexion to RabbitMQ
     def connect_channel busconf
-      raise PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless (busconf.is_a? Hash) &&
+      fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless (busconf.is_a? Hash) &&
         busconf[:host] && busconf[:port]
 
       info "connecting to #{busconf[:host]} port #{busconf[:port]}"
@@ -83,9 +83,9 @@ module PushyDaemon
       channel = conn.create_channel
 
     rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
-      raise PushyDaemon::EndpointConnectionError, "error connecting (#{e.class})"
+      fail PushyDaemon::EndpointConnectionError, "error connecting (#{e.class})"
     rescue StandardError => e
-      raise PushyDaemon::EndpointConnectionError, "unknow (#{e.inspect})"
+      fail PushyDaemon::EndpointConnectionError, "unknow (#{e.inspect})"
     else
       return channel
     end
@@ -103,8 +103,8 @@ module PushyDaemon
       rule_topic = rule[:topic].to_s
       rule_routes = rule[:routes].to_s.split(' ')
       rule_queue = "#{Conf.name}-#{PROXY_SCOPE}-#{rule[:name]}"
-      raise PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
-      raise PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking routes" if rule_routes.empty?
+      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
+      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking routes" if rule_routes.empty?
 
       # Create queue for this rule (remove it beforehand)
       #conn.create_channel.queue_delete(rule_queue_name)
@@ -130,10 +130,10 @@ module PushyDaemon
       end
 
     rescue Bunny::PreconditionFailed => e
-      raise PushyDaemon::EndpointSubscribeError, "PreconditionFailed: [#{rule_topic}] code(#{e.channel_close.reply_code}) message(#{e.channel_close.reply_text})"
+      fail PushyDaemon::EndpointSubscribeError, "PreconditionFailed: [#{rule_topic}] code(#{e.channel_close.reply_code}) message(#{e.channel_close.reply_text})"
 
     rescue StandardError => e
-      raise PushyDaemon::EndpointSubscribeError, "unhandled (#{e.inspect})"
+      fail PushyDaemon::EndpointSubscribeError, "unhandled (#{e.inspect})"
 
     end
 

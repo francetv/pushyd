@@ -17,19 +17,19 @@ module PushyDaemon
 
     def self.prepare args = {}
       # Context parameters
-      raise PushyDaemon::ConfigMissingParameter, "missing root" unless (@root = args[:root])
-      raise PushyDaemon::ConfigMissingParameter, "missing env"  unless (@env = args[:env])
+      fail PushyDaemon::ConfigMissingParameter, "missing root" unless (@root = args[:root])
+      fail PushyDaemon::ConfigMissingParameter, "missing env"  unless (@env = args[:env])
 
       # Gemspec parameter
       gemspec_path = "#{args[:root]}/#{args[:gemspec]}.gemspec"
-      raise PushyDaemon::ConfigMissingParameter, "missing gemspec" unless args[:gemspec]
-      raise PushyDaemon::ConfigMissingParameter, "gemspec file not found: #{gemspec_path}" unless File.exist?(gemspec_path)
+      fail PushyDaemon::ConfigMissingParameter, "missing gemspec" unless args[:gemspec]
+      fail PushyDaemon::ConfigMissingParameter, "gemspec file not found: #{gemspec_path}" unless File.exist?(gemspec_path)
 
       # Load Gemspec
       @spec     = Gem::Specification::load gemspec_path
       @name     = @spec.name
       @version  = @spec.version
-      raise PushyDaemon::ConfigMissingParameter, "missing name" unless @name
+      fail PushyDaemon::ConfigMissingParameter, "missing name" unless @name
 
       # Init Chamber (defaults, etc, cmdline)
       @files = ["#{args[:root]}/defaults.yml"]
@@ -46,10 +46,10 @@ module PushyDaemon
       self[:log] = args[:log].to_s if args[:log]
 
     rescue Psych::SyntaxError => e
-      raise PushyDaemon::ConfigParseError, e.message
+      fail PushyDaemon::ConfigParseError, e.message
 
     rescue Exception => e
-      raise PushyDaemon::ConfigParseError, e.message
+      fail PushyDaemon::ConfigParseError, e.message
 
     end
 
