@@ -17,20 +17,21 @@ module PushyDaemon
       super
       @keys = []
 
-      # Start connexion to RabbitMQ and create channel
-      @channel = connect_channel Conf.bus
-      info "channel connected"
-
       # Check config
       config_shout = Conf[:shout]
-      if config_shout.empty? || (!config_shout.is_a? Enumerable)
-        abort "prepare: empty [shout] section"
+      unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
+        error "prepare: empty [shout] section"
+        return
       end
 
       # Extract information
       @keys = config_shout[:keys] if config_shout[:keys].is_a? Array
       @topic = config_shout[:topic]
       @period = config_shout[:period] || 0
+
+      # Start connexion to RabbitMQ and create channel
+      @channel = connect_channel Conf.bus
+      info "channel connected"
 
       # Create exchange
       raise PushyDaemon::EndpointTopicContext unless @topic
@@ -42,13 +43,13 @@ module PushyDaemon
     end
 
     def shout
+      return unless @exchange
+
       # Prepare exchange
       loop do
-        if @exchange # shout_exchange
-          random_string = SecureRandom.hex
-          random_key = @keys.sample || "random"
-          channel_shout [:ping, random_key, random_string], {}
-        end
+        random_string = SecureRandom.hex
+        random_key = @keys.sample || "random"
+        channel_shout [:ping, random_key, random_string], {}
         sleep @period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
