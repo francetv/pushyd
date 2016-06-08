@@ -11,8 +11,12 @@ module PushyDaemon
       # Create a new shouter
       s = Shouter.new
 
-      # Start infinite loop
+      # Start shout loop
       s.shout
+
+      # Backup infinite loop in case shout does nothing
+      loop do
+      end
 
     rescue Errno::EACCES, Exception => e
       abort "EXITING #{e.class}: #{e.message}"
