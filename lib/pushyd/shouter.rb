@@ -19,9 +19,8 @@ module PushyDaemon
       @keys = []
 
       # Start connexion to RabbitMQ and create channel
-      conn = connect Conf.bus
-      @channel = conn.create_channel
-      info "connected on a channel"
+      @channel = connect_channel Conf.bus
+      info "channel connected"
 
       # Check config
       config_shout = Conf[:shout]

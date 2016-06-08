@@ -64,23 +64,27 @@ module PushyDaemon
     end
 
     # Start connexion to RabbitMQ
-    def connect busconf
+    def connect_channel busconf
       raise PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless (busconf.is_a? Hash) &&
         busconf[:host] && busconf[:port]
 
-      puts "connecting to #{busconf[:host]} port #{busconf[:port]}"
+      info "connecting to #{busconf[:host]} port #{busconf[:port]}"
       conn = Bunny.new host: (busconf[:host].to_s || "localhost").to_s,
         port: busconf[:port].to_i,
         user: busconf[:user].to_s,
         pass: busconf[:pass].to_s,
         heartbeat: :server
       conn.start
+
+      # Create channel
+      channel = conn.create_channel
+
     rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
       raise PushyDaemon::EndpointConnectionError, "error connecting (#{e.class})"
     rescue Exception => e
       raise PushyDaemon::EndpointConnectionError, "unknow (#{e.inspect})"
     else
-      return conn
+      return channel
     end
 
     # Declare or return the exchange for this topic
