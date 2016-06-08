@@ -55,7 +55,7 @@ puts "Loging to file \t #{Conf[:log]}"
 if cmd_dump
   puts Conf.dump
   exit(0)
-
+end
 
 # Run daemon
 run_options = {
