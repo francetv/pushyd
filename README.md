@@ -6,13 +6,13 @@ pushyd
 [![Test Coverage](https://codeclimate.com/github/bmedici/pushyd/badges/coverage.svg)](https://codeclimate.com/github/bmedici/pushyd/coverage)
 [ ![Codeship](https://codeship.com/projects/72fcb0f0-0fa7-0134-fb73-16f75abdb9e2/status?branch=master)](https://codeship.com/projects/156725)
 
-This is a basic proxy listenning to a RabbitMQ bus, and repeating selected messages in POST requests when matching filters
+A nice proxy listenning to a RabbitMQ bus, repeating selected messages in POST requests when filters match routing patterns
 
 
 Known bugs
 ------------------------------------------------------------------------------------
 
-None at this time
+* As this project is based on the Psyck YAML parser, configuration merge from "defaults" section and environment-specific section are broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults". Please repeat whole sections from "defaults".
 
 
 Contributing
@@ -42,10 +42,8 @@ So,
   * add proper tests if adding a feature
   * run the tests using `rake`
   * check for RuboCop style guide violations
-
 4. Commit your changes
 5. Push to the branch (`git push origin my-new-feature`)
-
 6. Create new Pull Request
 
 
