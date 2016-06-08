@@ -24,14 +24,8 @@ module PushyDaemon
 
       # Check config
       config_shout = Conf[:shout]
-      if (config_shout.is_a? Enumerable) && !config_shout.empty?
-        @keys = config_shout[:keys] if config_shout[:keys].is_a? Array
-        @topic = config_shout[:topic]
-
-        info "found topic: #{@topic}"
-        info "found keys: #{@keys.join(', ')}"
-      else
-        error "prepare: empty [shout] section"
+      if config_shout.empty? || (!config_shout.is_a? Enumerable)
+        abort "prepare: empty [shout] section"
       end
 
       @period = config_shout[:period] || 0
