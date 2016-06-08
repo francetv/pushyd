@@ -44,7 +44,7 @@ module PushyDaemon
     def shout
       # Prepare exchange
       loop do
-        if true # shout_exchange
+        if @exchange # shout_exchange
           random_string = SecureRandom.hex
           random_key = @keys.sample || "random"
           channel_shout [:ping, random_key, random_string], {}
@@ -57,7 +57,6 @@ module PushyDaemon
       raise PushyDaemon::ShouterChannelClosed, "#{e.class} (#{e.inspect})"
     rescue Bunny::PreconditionFailed => e
       raise PushyDaemon::ShouterPreconditionFailed, "#{e.class} (#{e.inspect})"
-
     rescue Interrupt => e
       @channel.close
       raise PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
