@@ -35,13 +35,6 @@ begin
   # Build Chamber-based configuration from Gemspec with initial context
   Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, log: cmd_logfile
 
-  # Display final configuration
-  puts "--- #{Conf.name} #{Conf.version}"
-  puts "Environment    \t #{Conf.env}"
-  puts "Config files   \t #{Conf.files}"
-  puts "Loging to file \t #{Conf[:log]}"
-  puts Conf.dump if cmd_dump
-
 rescue OptionParser::InvalidOption => e
   abort "EXITING: option parser: #{e.message}"
 rescue PushyDaemon::ConfigParseError => e
@@ -49,6 +42,19 @@ rescue PushyDaemon::ConfigParseError => e
 rescue StandardError => e
   abort "EXITING: Exception: #{e.message}"
 end
+
+# Display final configuration
+puts "--- #{Conf.name} #{Conf.version}"
+puts "YAML Parser    \t #{YAML.name}"
+puts "Environment    \t #{Conf.env}"
+puts "Config files   \t #{Conf.files}"
+puts "Loging to file \t #{Conf[:log]}"
+
+
+# Quit if config dump requested
+if cmd_dump
+  puts Conf.dump
+  exit(0)
 
 
 # Run daemon
