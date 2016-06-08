@@ -52,8 +52,9 @@ module PushyDaemon
       end
 
       # Body (split in lines to log them separately)
-      unless (params[:body].nil? || params[:body].empty?)
-        JSON.pretty_generate(params[:body]).each_line do |line|
+      if params[:body] && params[:body].is_a?(Enumerable)
+        body_json = JSON.pretty_generate(params[:body])
+        body_json.each_line do |line|
           lines << line.rstrip
         end
       end
