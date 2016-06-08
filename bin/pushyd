@@ -46,7 +46,7 @@ rescue OptionParser::InvalidOption => e
   abort "EXITING: option parser: #{e.message}"
 rescue PushyDaemon::ConfigParseError => e
   abort "EXITING: ConfigParseError: #{e.message}"
-rescue Exception => e
+rescue StandardError => e
   abort "EXITING: Exception: #{e.message}"
 end
 

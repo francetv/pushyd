@@ -84,7 +84,7 @@ module PushyDaemon
 
     rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
       raise PushyDaemon::EndpointConnectionError, "error connecting (#{e.class})"
-    rescue Exception => e
+    rescue StandardError => e
       raise PushyDaemon::EndpointConnectionError, "unknow (#{e.inspect})"
     else
       return channel
@@ -132,7 +132,7 @@ module PushyDaemon
     rescue Bunny::PreconditionFailed => e
       raise PushyDaemon::EndpointSubscribeError, "PreconditionFailed: [#{rule_topic}] code(#{e.channel_close.reply_code}) message(#{e.channel_close.reply_text})"
 
-    rescue Exception => e
+    rescue StandardError => e
       raise PushyDaemon::EndpointSubscribeError, "unhandled (#{e.inspect})"
 
     end
