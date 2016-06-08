@@ -28,10 +28,15 @@ module PushyDaemon
         abort "prepare: empty [shout] section"
       end
 
+      # Extract information
+      @keys = config_shout[:keys] if config_shout[:keys].is_a? Array
+      @topic = config_shout[:topic]
       @period = config_shout[:period] || 0
+
       # Create exchange
       raise PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
+      info "initialized with parameters:", {topic: @topic, period: @period, keys: @keys}
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
