@@ -7,7 +7,7 @@ class PushyLogger < Logger
     super
 
     # And the formatter
-    self.formatter = proc do |severity, datetime, progname, messages|
+    self.formatter = proc do |severity, datetime, _progname, messages|
       # Build common line prefix
       prefix = "%s %s\t" % [
         datetime.strftime(LOG_FORMAT_TIME),

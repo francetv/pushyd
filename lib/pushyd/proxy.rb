@@ -98,7 +98,7 @@ module PushyDaemon
       response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json
       info "#{id}: #{response.body}"
 
-      rescue Exception => e
+      rescue StandardError => e
         error "propagate: #{e.message}"
     end
 
