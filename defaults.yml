@@ -8,6 +8,7 @@ bus:
 log: "pushyd.log"
 shout:
   topic: pushyd
+  period: 2
   # keys:
   #   - tic
   #   - tac

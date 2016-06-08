@@ -34,6 +34,7 @@ module PushyDaemon
         error "prepare: empty [shout] section"
       end
 
+      @period = config_shout[:period] || 0
       # Create exchange
       raise PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
@@ -50,7 +51,7 @@ module PushyDaemon
           random_key = @keys.sample || "random"
           channel_shout [:ping, random_key, random_string], {}
         end
-        sleep 1
+        sleep @period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
       raise PushyDaemon::ShouterResponseError, "#{e.class} (#{e.inspect})"
