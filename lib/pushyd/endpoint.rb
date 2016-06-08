@@ -21,13 +21,13 @@ module PushyDaemon
 
   protected
 
-    def error message
-      @logger.add Logger::ERROR, "#{self.class}: #{message}"
+    def error message, lines = {}
+      @logger.add Logger::ERROR, "#{self.class}: #{message}", lines
       #raise "ABORT #{self.class}: #{message}"
     end
 
-    def info message
-      @logger.add Logger::INFO, "#{self.class}: #{message}"
+    def info message, lines = {}
+      @logger.add Logger::INFO, "#{self.class}: #{message}", lines
     end
 
     def message params = {}
