@@ -5,7 +5,9 @@ bus:
   port: 5672
   user: guest
   pass: guest
-log: "pushyd.log"
+
+log: null
+
 shout:
   topic: pushyd
   period: 2

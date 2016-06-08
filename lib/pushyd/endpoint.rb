@@ -17,6 +17,9 @@ module PushyDaemon
       # Create the logger
       @logger = PushyLogger.new(logfile, LOG_ROTATION)
       @logger.add Logger::INFO, "starting #{self.class.name.to_s}"
+
+      # Declare we're now logging
+      puts "#{self.class} logging to #{logfile}"
     end
 
   protected
