@@ -100,7 +100,6 @@ module PushyDaemon
 
       rescue Exception => e
         error "propagate: #{e.message}"
-
     end
 
 
@@ -121,11 +120,11 @@ module PushyDaemon
           return utf8payload
       end
 
-      # Handle body parse errors
-      rescue Encoding::UndefinedConversionError => e
-        error "parse: JSON PARSE ERROR: #{e.inspect}"
-        return {}
-      end
-
+    # Handle body parse errors
+    rescue Encoding::UndefinedConversionError => e
+      error "parse: JSON PARSE ERROR: #{e.inspect}"
+      return {}
     end
+
+  end
 end

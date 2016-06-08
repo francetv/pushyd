@@ -2,12 +2,11 @@ require 'yaml'
 require 'json'
 
 module PushyDaemon
-
-  class ShouterResponseError    < StandardError; end
-  class ShouterChannelClosed    < StandardError; end
-  class ShouterPreconditionFailed    < StandardError; end
-  class ShouterInterrupted      < StandardError; end
-  class EndpointTopicContext    < StandardError; end
+  class ShouterResponseError       < StandardError; end
+  class ShouterChannelClosed       < StandardError; end
+  class ShouterPreconditionFailed  < StandardError; end
+  class ShouterInterrupted         < StandardError; end
+  class EndpointTopicContext       < StandardError; end
 
   class Shouter < Endpoint
 

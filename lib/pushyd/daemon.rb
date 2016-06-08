@@ -16,7 +16,6 @@ module PushyDaemon
 
     rescue Errno::EACCES, Exception => e
       abort "EXITING #{e.class}: #{e.message}"
-
     end
 
   end

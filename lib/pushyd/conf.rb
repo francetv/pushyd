@@ -1,7 +1,6 @@
 require "chamber"
 
 module PushyDaemon
-
   class ConfigMissingParameter    < StandardError; end
   class ConfigParseError          < StandardError; end
 
