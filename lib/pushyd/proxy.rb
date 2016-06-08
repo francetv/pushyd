@@ -1,6 +1,4 @@
 require 'rest_client'
-require 'yaml'
-require 'json'
 require 'terminal-table'
 
 module PushyDaemon

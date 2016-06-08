@@ -1,6 +1,3 @@
-require 'yaml'
-require 'json'
-
 module PushyDaemon
   class ShouterResponseError       < StandardError; end
   class ShouterChannelClosed       < StandardError; end
