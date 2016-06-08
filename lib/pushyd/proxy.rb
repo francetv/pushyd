@@ -38,7 +38,8 @@ module PushyDaemon
       end
 
       # Send config table to logs
-      info "dumping configuration\n#{@table.to_s}"
+      table_lines = @table.to_s.lines
+      info "initialized with configuration:", table_lines
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
