@@ -6,7 +6,6 @@ WAY_POST  = "POST"
 # Constants: proxy
 PROXY_MESSAGE_MAX   = 1
 PROXY_USE_ACK       = false
-PROXY_SCOPE         = "dev"
 
 # Constants: logger
 LOG_COL_ID              = 6

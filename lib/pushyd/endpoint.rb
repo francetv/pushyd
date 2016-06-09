@@ -100,7 +100,7 @@ module PushyDaemon
       rule_name = rule[:name].to_s
       rule_topic = rule[:topic].to_s
       rule_routes = rule[:routes].to_s.split(' ')
-      rule_queue = "#{Conf.name}-#{PROXY_SCOPE}-#{rule[:name]}"
+      rule_queue = "#{Conf.name}-#{rule[:name]}"
       fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
       fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking routes" if rule_routes.empty?
 
