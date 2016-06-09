@@ -34,5 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency       "bunny"
   spec.add_runtime_dependency       "rest-client"
   spec.add_runtime_dependency       "terminal-table"
-  # spec.add_runtime_dependency "newrelic_rpm"
+  spec.add_runtime_dependency       "newrelic_rpm"
 end
