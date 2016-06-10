@@ -100,6 +100,7 @@ module PushyDaemon
         error "propagate: #{e.message}"
     end
 
+  private
 
     def parse payload, content_type #, fields = []
       # Force encoding (pftop...)
@@ -119,6 +120,13 @@ module PushyDaemon
     rescue Encoding::UndefinedConversionError => e
       error "parse: JSON PARSE ERROR: #{e.inspect}"
       return {}
+    end
+
+    # NewRelic instrumentation
+    if Conf.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+      add_transaction_tracer :handle_message, category: :task
+      add_transaction_tracer :propagate,      category: :task
     end
 
   end
