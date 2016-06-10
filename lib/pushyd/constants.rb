@@ -8,10 +8,10 @@ PROXY_MESSAGE_MAX   = 1
 PROXY_USE_ACK       = false
 
 # Constants: logger
-LOG_COL_ID              = 6
+LOG_ROTATION            = "daily"
 LOG_TRIM_LINE           = 200
 LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
-LOG_FORMAT_MESSAGE      = "%-6s"
-LOG_NEWLINE             = "\n"
-LOG_INDENT              = "\t"
-LOG_ROTATION            = "daily"
+LOG_FORMAT_LINE         = "%s %-8s %-12s TXT %s\n"
+LOG_FORMAT_ARRAY        = "%s %-8s %-12s ARR      %s\n"
+LOG_FORMAT_HASH         = "%s %-8s %-12s HSH      %-15s %s\n"
+
