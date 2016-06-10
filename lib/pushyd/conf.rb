@@ -47,7 +47,7 @@ module PushyDaemon
       # Override some values
       self[:log] ||= {}
       if args[:logfile]
-        self[:log][:file] = logfile
+        self[:log][:file] = args[:logfile].to_s
       end
 
       # Init New Relic
