@@ -16,6 +16,14 @@ module PushyDaemon
       # OK
       info "endpoint initialized"
 
+      # Send test messages
+      # loop do
+      #   info "info"
+      #   info ["info1", "info2", "info3"]
+      #   error "error"
+      #   debug "debug"
+      #   sleep 1
+      # end
     end
 
   protected

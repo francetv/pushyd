@@ -33,7 +33,11 @@ module PushyDaemon
       # Create exchange
       fail PushyDaemon::EndpointTopicContext unless @topic
       @exchange = @channel.topic(@topic, durable: true, persistent: true)
-      info "initialized with parameters:", { topic: @topic, period: @period, keys: @keys }
+
+      # Send shouter info to logs
+      shouter_info = { topic: @topic, period: @period, keys: @keys }
+      info "shouter initialized"
+      info shouter_info
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"

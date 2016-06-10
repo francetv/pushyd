@@ -6,7 +6,9 @@ bus:
   user: guest
   pass: guest
 
-log: null
+log:
+  file: null
+  level: debug
 
 shout:
   topic: pushyd
@@ -26,3 +28,4 @@ shout:
 #     routes: "proxy.#"
 #     subscribe: false
 #     #relay: http://requestb.in/1clzv7v1
+

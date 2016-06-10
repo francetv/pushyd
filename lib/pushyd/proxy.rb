@@ -23,7 +23,7 @@ module PushyDaemon
 
       # Check config
       config_rules = Conf[:rules]
-      unless (config_rules.is_a? Enumerable) && !config_rules.empty?
+      if config_rules.nil? || !config_rules.is_a?(Hash)
         error "prepare: empty [rules] section"
       end
       info "found rules: #{config_rules.keys.join(', ')}"
@@ -36,8 +36,8 @@ module PushyDaemon
       end
 
       # Send config table to logs
-      table_lines = @table.to_s.lines
-      info "initialized with configuration:", table_lines
+      info "proxy initialized"
+      info @table.to_s.lines
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
