@@ -17,7 +17,6 @@ module PushyDaemon
       attr_reader :host
     end
 
-
     def self.prepare args = {}
       # Context parameters
       fail PushyDaemon::ConfigMissingParameter, "missing root" unless (@root = args[:root])
@@ -80,6 +79,9 @@ module PushyDaemon
         return
       end
         puts "prepare_newrelic: config ok"
+
+      # Enable GC profiler
+      GC::Profiler.enable
 
       # Enable module
       ENV["NEWRELIC_AGENT_ENABLED"] = "true"
