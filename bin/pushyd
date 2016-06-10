@@ -46,7 +46,7 @@ end
 puts "--- #{Conf.name} #{Conf.version}"
 puts "Environment    \t #{Conf.env}"
 puts "Config files   \t #{Conf.files}"
-puts "Loging to file \t #{Conf.log.logfile}"
+puts "Loging to file \t #{Conf.log.file}"
 puts "YAML Parser    \t #{YAML.name}"
 
 # Quit if config dump requested
