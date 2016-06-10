@@ -20,8 +20,6 @@ module PushyDaemon
 
   protected
 
-    def error message, lines = {}
-      @logger.add Logger::ERROR, "#{self.class}: #{message}", lines
     def init_logger logconf
       # Prepare logger (may be NIL > won't output anything)
       logfile = logconf[:file]
@@ -55,16 +53,21 @@ module PushyDaemon
       end
     end
 
-    def info message, lines = {}
-      @logger.add Logger::INFO, "#{self.class}: #{message}", lines
+    def error messages
+      @logger.error messages
+    end
+
+    def info messages
+      @logger.info messages
+    end
+
+    def debug messages
+      @logger.debug messages
     end
 
     def message params = {}
-      # Indenting
-      lines = []
-
       # Header
-      message = sprintf(
+      @logger.info sprintf(
         "%3s %-15s %s",
         params[:way],
         params[:exchange],
@@ -72,24 +75,14 @@ module PushyDaemon
         )
 
       # Attributes
-      if (params[:attrs].is_a? Hash)
-        # lines.merge params[:attrs]
-        params[:attrs].each do |name, value|
-          lines << sprintf("%-15s %s", name, value)
-        end
-      end
+      @logger.debug params[:attrs] if params[:attrs].is_a?(Hash)
 
       # Body (split in lines to log them separately)
-      if params[:body] && params[:body].is_a?(Enumerable)
+      if params[:body].is_a?(Enumerable) && !params[:body].empty?
         body_json = JSON.pretty_generate(params[:body])
-        body_json.each_line do |line|
-          lines << line.rstrip
-        end
+        #puts "log? #{params[:body]} "
+        @logger.debug body_json.lines
       end
-
-      # Send the info
-      @logger.add Logger::INFO, message, lines
-      # @logger.log_info message, lines
     end
 
     # Start connexion to RabbitMQ
