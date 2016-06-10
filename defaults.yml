@@ -21,6 +21,13 @@ shout:
   #   - updated
   #   - deleted
   #   - crunched
+
+# newrelic:
+#   licence: ""
+#   platform: "bigbusiness"               # app platform name
+#   app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+#   logfile: null
+
 # rules:
 #   proxy_tests:
 #     title: All proxy tests messages

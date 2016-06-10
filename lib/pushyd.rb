@@ -4,7 +4,7 @@ require "yaml"
 require "json"
 require "thread"
 require "singleton"
-# require "newrelic_rpm"
+require "newrelic_rpm"
 
 # Project libs
 require_relative "pushyd/conf"

@@ -17,6 +17,7 @@ module PushyDaemon
       attr_reader :host
     end
 
+
     def self.prepare args = {}
       # Context parameters
       fail PushyDaemon::ConfigMissingParameter, "missing root" unless (@root = args[:root])
@@ -44,11 +45,17 @@ module PushyDaemon
       # Load configuration files
       load files: @files, namespaces: { environment: @env }
 
+      # Override some values
+      self[:log] ||= {}
+      if args[:logfile]
+        self[:log][:file] = logfile
+      end
+
+      # Init New Relic
+      prepare_newrelic self[:newrelic]
+
       # Try to access any key to force parsing of the files
       self[:dummy]
-
-      # Override some values
-      self[:log] = args[:log].to_s if args[:log]
 
     rescue Psych::SyntaxError => e
       fail PushyDaemon::ConfigParseError, e.message
@@ -59,6 +66,37 @@ module PushyDaemon
     def self.dump
       self.to_hash.to_yaml
     end
+
+    def Conf.newrelic_enabled?
+      !!self[:newrelic]
+    end
+
+  protected
+
+    def self.prepare_newrelic section
+      unless section.is_a?(Hash)
+        puts "prepare_newrelic: no config"
+        ENV["NEWRELIC_AGENT_ENABLED"] = "false"
+        return
+      end
+        puts "prepare_newrelic: config ok"
+
+      # Enable module
+      ENV["NEWRELIC_AGENT_ENABLED"] = "true"
+      ENV["NEW_RELIC_MONITOR_MODE"] = "true"
+
+      # License
+      ENV["NEW_RELIC_LICENSE_KEY"] = section[:licence].to_s
+
+      # Appname
+      platform = section[:platform] || self.host
+      section[:app_name] ||= "#{self.name}-#{platform}-#{self.env}"
+      ENV["NEW_RELIC_APP_NAME"] = section[:app_name].to_s
+
+      # Logfile
+      ENV["NEW_RELIC_LOG"] = section[:logfile].to_s
+    end
+
 
   end
 end
