@@ -138,7 +138,8 @@ module PushyDaemon
         info "subscribe: bind [#{rule_topic}/#{route}] \t> #{rule_queue}"
 
         # Add row to config table
-        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s ]
+        # ["rule", "topic", "route", "relay", "queue", "description"]
+        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule_queue, rule[:title].to_s ]
       end
 
       # Subscribe to our new queue

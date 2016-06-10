@@ -14,7 +14,7 @@ module PushyDaemon
       # Init ASCII table
       @table = Terminal::Table.new
       @table.title = "Propagation rules"
-      @table.headings = ["queue binding", "topic", "route", "relay", "title"]
+      @table.headings = ["rule", "topic", "route", "relay", "queue", "description"]
       @table.align_column(5, :right)
 
       # Start connexion to RabbitMQ and create channel
