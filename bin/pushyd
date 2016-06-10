@@ -44,10 +44,10 @@ end
 
 # Display final configuration
 puts "--- #{Conf.name} #{Conf.version}"
-puts "YAML Parser    \t #{YAML.name}"
 puts "Environment    \t #{Conf.env}"
 puts "Config files   \t #{Conf.files}"
 puts "Loging to file \t #{Conf.log.logfile}"
+puts "YAML Parser    \t #{YAML.name}"
 
 # Quit if config dump requested
 if cmd_dump

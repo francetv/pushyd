@@ -74,11 +74,11 @@ module PushyDaemon
 
     def self.prepare_newrelic section
       unless section.is_a?(Hash)
-        puts "prepare_newrelic: no config"
+        # puts "prepare_newrelic: no config found"
         ENV["NEWRELIC_AGENT_ENABLED"] = "false"
         return
       end
-        puts "prepare_newrelic: config ok"
+      # puts "prepare_newrelic: #{section.inspect}"
 
       # Enable GC profiler
       GC::Profiler.enable
