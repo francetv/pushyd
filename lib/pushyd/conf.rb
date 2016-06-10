@@ -13,6 +13,7 @@ module PushyDaemon
       attr_reader :files
       attr_reader :version
       attr_reader :env
+      attr_reader :host
     end
 
     def self.prepare args = {}
@@ -24,6 +25,9 @@ module PushyDaemon
       gemspec_path = "#{args[:root]}/#{args[:gemspec]}.gemspec"
       fail PushyDaemon::ConfigMissingParameter, "missing gemspec" unless args[:gemspec]
       fail PushyDaemon::ConfigMissingParameter, "gemspec file not found: #{gemspec_path}" unless File.exist?(gemspec_path)
+
+      # Init host if missing
+      @host ||= `hostname`.to_s.chomp.split(".").first
 
       # Load Gemspec
       @spec     = Gem::Specification::load gemspec_path
@@ -47,10 +51,8 @@ module PushyDaemon
 
     rescue Psych::SyntaxError => e
       fail PushyDaemon::ConfigParseError, e.message
-
     rescue Exception => e
       fail PushyDaemon::ConfigParseError, e.message
-
     end
 
     def self.dump
