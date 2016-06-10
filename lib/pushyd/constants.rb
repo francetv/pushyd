@@ -11,7 +11,7 @@ PROXY_USE_ACK           = false
 LOG_ROTATION            = "daily"
 LOG_TRIM_LINE           = 200
 LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
-LOG_FORMAT_LINE         = "%s %-8s %-12s TXT %s\n"
-LOG_FORMAT_ARRAY        = "%s %-8s %-12s ARR      %s\n"
-LOG_FORMAT_HASH         = "%s %-8s %-12s HSH      %-15s %s\n"
+LOG_FORMAT_LINE         = "%s\t%-8s\t%-10s\t%s\n"
+LOG_FORMAT_ARRAY        = "%s\t%-8s\t%-10s\t   %s\n"
+LOG_FORMAT_HASH         = "%s\t%-8s\t%-10s\t   %-17s %s\n"
 
