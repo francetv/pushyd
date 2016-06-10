@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.name                         = "pushyd"
   spec.authors                      = ["Bruno MEDICI"]
   spec.email                        = "pushyd@bmconseil.com"
-  spec.description                  = "(description to be written)"
-  spec.summary                      = "(summary to be written)"
+  spec.description                  = "A nice proxy listenning to a RabbitMQ bus, repeating selected messages in POST requests when filters match routing patterns"
+  spec.summary                      = spec.description
   spec.homepage                     = "http://github.com/bmedici/pushyd"
   spec.licenses                     = ["MIT"]
   spec.date                         = Time.now.strftime("%Y-%m-%d")
@@ -23,16 +23,16 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency   "bundler", "~> 1.6"
   spec.add_development_dependency   "rake"
   spec.add_development_dependency   "rspec"
-  spec.add_development_dependency   "http", "~> 0.8"
+  spec.add_development_dependency   "http", "~> 2.0"
   spec.add_development_dependency   "rubocop", "~> 0.32.0"
   # spec.add_development_dependency "pry"
 
   # Runtime dependencies
   spec.add_runtime_dependency       "daemons"
-  spec.add_runtime_dependency       "chamber"
+  spec.add_runtime_dependency       "chamber", "~> 2.9"
   spec.add_runtime_dependency       "json"
-  spec.add_runtime_dependency       "bunny"
-  spec.add_runtime_dependency       "rest-client"
+  spec.add_runtime_dependency       "bunny", "~> 2.3"
+  spec.add_runtime_dependency       "rest-client", "~> 1.8"
   spec.add_runtime_dependency       "terminal-table"
   spec.add_runtime_dependency       "newrelic_rpm"
 end
