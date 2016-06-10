@@ -5,7 +5,6 @@ begin
   require "rubygems"
   require "optparse"
   require 'daemons'
-  require 'logger'
   require_relative "../lib/pushyd/conf"
 rescue LoadError
   raise "EXITING: some basic libs were not found"
@@ -33,14 +32,14 @@ begin
   end.order!(ARGV)
 
   # Build Chamber-based configuration from Gemspec with initial context
-  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, log: cmd_logfile
+  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, logfile: cmd_logfile
 
 rescue OptionParser::InvalidOption => e
-  abort "EXITING: option parser: #{e.message}"
+  abort "EXITING: InvalidOption: #{e.message} \n #{e.backtrace.to_yaml}"
 rescue PushyDaemon::ConfigParseError => e
-  abort "EXITING: ConfigParseError: #{e.message}"
+  abort "EXITING: ConfigParseError: #{e.message} \n #{e.backtrace.to_yaml}"
 rescue StandardError => e
-  abort "EXITING: Exception: #{e.message}"
+  abort "EXITING: StandardError: #{e.message} \n #{e.backtrace.to_yaml}"
 end
 
 # Display final configuration
@@ -48,7 +47,7 @@ puts "--- #{Conf.name} #{Conf.version}"
 puts "YAML Parser    \t #{YAML.name}"
 puts "Environment    \t #{Conf.env}"
 puts "Config files   \t #{Conf.files}"
-puts "Loging to file \t #{Conf[:log]}"
+puts "Loging to file \t #{Conf.log.logfile}"
 
 # Quit if config dump requested
 if cmd_dump

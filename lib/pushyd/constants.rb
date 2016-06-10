@@ -4,8 +4,8 @@ WAY_IN    = "RECD"
 WAY_POST  = "POST"
 
 # Constants: proxy
-PROXY_MESSAGE_MAX   = 1
-PROXY_USE_ACK       = false
+PROXY_MESSAGE_MAX       = 1
+PROXY_USE_ACK           = false
 
 # Constants: logger
 LOG_ROTATION            = "daily"

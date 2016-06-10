@@ -13,10 +13,8 @@ module PushyDaemon
       # Prepare logger
       init_logger Conf[:log]
 
-      # OK
+      # Done
       info "endpoint initialized"
-
-      # Send test messages
       # loop do
       #   info "info"
       #   info ["info1", "info2", "info3"]
@@ -29,16 +27,16 @@ module PushyDaemon
   protected
 
     def init_logger logconf
-      # Prepare logger (may be NIL > won't output anything)
-      logfile = logconf[:file]
-      loglevel = logconf[:level]
-      @logger = Logger.new(logfile, LOG_ROTATION)
+      # Extract context
+      logfile   = logconf[:file]
+      loglevel  = logconf[:level]
+      me        = self.class.name
 
-      # Set formatter
+      # Prepare logger (may be NIL > won't output anything)
+      @logger = Logger.new(logfile, LOG_ROTATION)
       @logger.formatter = Formatter
 
       # Set progname
-      me = self.class.name
       @logger.progname = me.split('::').last
 
       # Set expected level

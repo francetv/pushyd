@@ -19,7 +19,7 @@ module PushyDaemon
       end
 
     rescue Errno::EACCES, StandardError => e
-      abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.inspect}"
+      abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
     end
 
   end
