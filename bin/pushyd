@@ -50,7 +50,6 @@ puts "Environment    \t #{Conf.env}"
 puts "Config files   \t #{Conf.files}"
 puts "Loging to file \t #{Conf[:log]}"
 
-
 # Quit if config dump requested
 if cmd_dump
   puts Conf.dump
@@ -65,10 +64,10 @@ run_options = {
   }
 Daemons.run_proc('pushy-daemon', run_options) do
   # Load code
-  puts "--- loading code"
+  puts "--- load code"
   require_relative "../lib/pushyd"
 
   # Start daemon
-  puts "--- starting daemon"
+  puts "--- start daemon"
   PushyDaemon::Daemon.run
 end
