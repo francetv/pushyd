@@ -91,11 +91,12 @@ module PushyDaemon
         busconf[:host] && busconf[:port]
 
       info "connecting to #{busconf[:host]} port #{busconf[:port]}"
-      conn = Bunny.new host: (busconf[:host].to_s || "localhost").to_s,
+      conn = Bunny.new host: busconf[:host].to_s,
         port: busconf[:port].to_i,
         user: busconf[:user].to_s,
         pass: busconf[:pass].to_s,
-        heartbeat: :server
+        heartbeat: :server,
+        logger: @logger
       conn.start
 
       # Create channel
