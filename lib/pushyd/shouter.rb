@@ -74,7 +74,11 @@ module PushyDaemon
       routing_key = keys.unshift(exchange_name).join('.')
 
       # Announce shout
-      message way: WAY_OUT, exchange: exchange_name, key: routing_key, body: nil, attrs: {}
+      message way: WAY_OUT,
+        exchange: exchange_name,
+        key: routing_key,
+        body: body,
+        attrs: {}
 
       # Publish
       @exchange.publish(body.to_json,
