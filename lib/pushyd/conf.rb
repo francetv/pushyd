@@ -2,6 +2,7 @@ require "chamber"
 
 module PushyDaemon
   class ConfigMissingParameter    < StandardError; end
+  class ConfigOtherError          < StandardError; end
   class ConfigParseError          < StandardError; end
 
   class Conf
@@ -51,8 +52,8 @@ module PushyDaemon
 
     rescue Psych::SyntaxError => e
       fail PushyDaemon::ConfigParseError, e.message
-    rescue Exception => e
-      fail PushyDaemon::ConfigParseError, e.message
+    rescue StandardError => e
+      fail PushyDaemon::ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
     end
 
     def self.dump
