@@ -103,7 +103,7 @@ module PushyDaemon
 
     def parse payload, content_type #, fields = []
       # Force encoding (pftop...)
-      utf8payload = payload.force_encoding('UTF-8')
+      utf8payload = payload.to_s.force_encoding('UTF-8')
 
       # Parse payload if content-type provided
       case content_type
