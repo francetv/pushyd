@@ -1,7 +1,7 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   # Project version
-  spec.version                      = "0.3.4"
+  spec.version                      = "0.4.0"
 
   # Project description
   spec.name                         = "pushyd"
