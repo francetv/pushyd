@@ -6,3 +6,4 @@ tmp/
 log/
 DOC/
 .ruby-version
+local.yml
