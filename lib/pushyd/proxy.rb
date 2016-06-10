@@ -25,14 +25,14 @@ module PushyDaemon
       config_rules = Conf[:rules]
       if config_rules.nil? || !config_rules.is_a?(Hash)
         error "prepare: empty [rules] section"
-      end
-      info "found rules: #{config_rules.keys.join(', ')}"
+      else
+        info "found rules: #{config_rules.keys.join(', ')}"
 
-      # Subsribe for each and every rule/route
-      config_rules.each do |name, rule|
-        rule[:name] = name
-        channel_subscribe rule
-        #abort "prepare: OK"
+        # Subsribe for each and every rule/route
+        config_rules.each do |name, rule|
+          rule[:name] = name
+          channel_subscribe rule
+        end
       end
 
       # Send config table to logs
@@ -108,9 +108,6 @@ module PushyDaemon
       # Parse payload if content-type provided
       case content_type
         when "application/json"
-          # if fields = rule[:payload_extract]
-          #   data = payload_extract(payload, fields)
-          #   data_source = "extract #{fields.inspect} #{data.keys.count}k"
           return JSON.parse utf8payload
         when "text/plain"
           return utf8payload.to_s
