@@ -10,21 +10,49 @@ module PushyDaemon
   class Endpoint
 
     def initialize
-      # Prepare logger (may be NIL > won't output anything)
-      logfile = Conf[:log]
+      # Prepare logger
+      init_logger Conf[:log]
 
-      # Create the logger
-      @logger = PushyLogger.new(logfile, LOG_ROTATION)
-      @logger.add Logger::INFO, "starting #{self.class.name}"
+      # OK
+      info "endpoint initialized"
 
-      # Declare we're now logging
-      puts "#{self.class} logging to #{logfile}"
     end
 
   protected
 
     def error message, lines = {}
       @logger.add Logger::ERROR, "#{self.class}: #{message}", lines
+    def init_logger logconf
+      # Prepare logger (may be NIL > won't output anything)
+      logfile = logconf[:file]
+      loglevel = logconf[:level]
+      @logger = Logger.new(logfile, LOG_ROTATION)
+
+      # Set formatter
+      @logger.formatter = Formatter
+
+      # Set progname
+      me = self.class.name
+      @logger.progname = me.split('::').last
+
+      # Set expected level
+      @logger.level = case loglevel
+      when "debug"
+        Logger::DEBUG
+      when "info"
+        Logger::INFO
+      when "warn"
+        Logger::WARN
+      else
+        Logger::INFO
+      end
+
+      # Announce on STDOUT we're now logging to file
+      if logfile
+        puts "#{self.class} logging loglevel [#{loglevel} > #{@logger.level}] to [#{logfile}]"
+      else
+        puts "#{self.class} logging disabled"
+      end
     end
 
     def info message, lines = {}
