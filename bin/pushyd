@@ -6,8 +6,8 @@ begin
   require "optparse"
   require 'daemons'
   require_relative "../lib/pushyd/conf"
-rescue LoadError
-  raise "EXITING: some basic libs were not found"
+rescue LoadError => e
+  raise "EXITING: some basic libs were not found (#{e.message})"
 end
 include PushyDaemon
 
@@ -40,10 +40,11 @@ begin
 
 rescue OptionParser::InvalidOption => e
   abort "EXITING: InvalidOption: #{e.message} \n #{e.backtrace.to_yaml}"
-rescue PushyDaemon::ConfigParseError => e
+rescue ConfigParseError => e
   abort "EXITING: ConfigParseError: #{e.message} \n #{e.backtrace.to_yaml}"
 rescue StandardError => e
   abort "EXITING: StandardError: #{e.message} \n #{e.backtrace.to_yaml}"
+else
 end
 
 # Display final configuration, quit if config dump requested

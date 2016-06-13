@@ -18,6 +18,8 @@ module PushyDaemon
       loop do
       end
 
+    rescue EndpointConnectionError => e
+      abort "EXITING #{e.class}: #{e.message}"
     rescue Errno::EACCES, StandardError => e
       abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
     end

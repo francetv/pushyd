@@ -64,9 +64,9 @@ module PushyDaemon
       self[:dummy]
 
     rescue Psych::SyntaxError => e
-      fail PushyDaemon::ConfigParseError, e.message
+      fail ConfigParseError, e.message
     rescue StandardError => e
-      fail PushyDaemon::ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
+      fail ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
     end
 
     def self.dump
