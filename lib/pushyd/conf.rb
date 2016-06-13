@@ -4,42 +4,52 @@ module PushyDaemon
   class ConfigMissingParameter    < StandardError; end
   class ConfigOtherError          < StandardError; end
   class ConfigParseError          < StandardError; end
+  class ConfigMultipleGemspec          < StandardError; end
+  class ConfigMissingGemspec          < StandardError; end
 
   class Conf
     extend Chamber
 
     class << self
-      attr_reader :name
+      attr_accessor :app_env
+
+      attr_reader :app_root
+      attr_reader :app_name
+      attr_reader :app_ver
+
       attr_reader :spec
       attr_reader :files
-      attr_reader :version
-      attr_reader :env
       attr_reader :host
+
     end
 
-    def self.prepare args = {}
-      # Context parameters
-      fail PushyDaemon::ConfigMissingParameter, "missing root" unless (@root = args[:root])
-      fail PushyDaemon::ConfigMissingParameter, "missing env"  unless (@env = args[:env])
+    def self.init app_root = nil
+      # Defaults, hostname
+      @files    = []
+      @app_env  = "production"
+      @host     = `hostname`.to_s.chomp.split(".").first
 
       # Gemspec parameter
       gemspec_path = "#{args[:root]}/#{args[:gemspec]}.gemspec"
       fail PushyDaemon::ConfigMissingParameter, "missing gemspec" unless args[:gemspec]
       fail PushyDaemon::ConfigMissingParameter, "gemspec file not found: #{gemspec_path}" unless File.exist?(gemspec_path)
 
-      # Init host if missing
-      @host ||= `hostname`.to_s.chomp.split(".").first
 
       # Load Gemspec
       @spec     = Gem::Specification::load gemspec_path
-      @name     = @spec.name
-      @version  = @spec.version
-      fail PushyDaemon::ConfigMissingParameter, "missing name" unless @name
+      @app_name = @spec.name
+      @app_ver  = @spec.version
+      fail ConfigMissingParameter, "gemspec: missing name" unless @app_name
+      fail ConfigMissingParameter, "gemspec: missing version" unless @app_ver
 
-      # Init Chamber (defaults, etc, cmdline)
-      @files = ["#{args[:root]}/defaults.yml"]
-      @files << File.expand_path("/etc/#{@name}.yml")
-      @files << args[:config].to_s if args[:config]
+      # Add config files
+      add_default_config
+      add_etc_config
+    end
+
+    def self.prepare args = {}
+      # Add extra config file
+      add_extra_config args[:config]
 
       # Load configuration files
       load files: @files, namespaces: { environment: @env }
@@ -72,6 +82,18 @@ module PushyDaemon
 
   protected
 
+    def self.add_default_config
+      @files << "#{@app_root}/defaults.yml" if @app_root
+    end
+
+    def self.add_etc_config
+      @files << File.expand_path("/etc/#{@name}.yml") if @name
+    end
+
+    def self.add_extra_config path
+      @files << File.expand_path("/etc/#{@name}.yml") if path
+    end
+
     def self.prepare_newrelic section
       unless section.is_a?(Hash)
         # puts "prepare_newrelic: no config found"
@@ -92,7 +114,7 @@ module PushyDaemon
 
       # Appname
       platform = section[:platform] || self.host
-      section[:app_name] ||= "#{self.name}-#{platform}-#{self.env}"
+      section[:app_name] ||= "#{self.name}-#{platform}-#{self.app_env}"
       ENV["NEW_RELIC_APP_NAME"] = section[:app_name].to_s
 
       # Logfile
