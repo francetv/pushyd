@@ -29,14 +29,17 @@ module PushyDaemon
       @app_env  = "production"
       @host     = `hostname`.to_s.chomp.split(".").first
 
-      # Gemspec parameter
-      gemspec_path = "#{args[:root]}/#{args[:gemspec]}.gemspec"
-      fail PushyDaemon::ConfigMissingParameter, "missing gemspec" unless args[:gemspec]
-      fail PushyDaemon::ConfigMissingParameter, "gemspec file not found: #{gemspec_path}" unless File.exist?(gemspec_path)
+      # Grab app root
+      @app_root = File.expand_path(app_root) if app_root
+      fail ConfigMissingParameter, "missing root" unless @app_root
 
+      # Try to find any gemspec file
+      matches   = Dir["#{@app_root}/*.gemspec"]
+      fail ConfigMissingGemspec, "gemspec file not found: #{gemspec_path}" if matches.size < 1
+      fail ConfigMultipleGemspec, "gemspec file not found: #{gemspec_path}" if matches.size > 1
 
       # Load Gemspec
-      @spec     = Gem::Specification::load gemspec_path
+      @spec     = Gem::Specification::load(matches.first)
       @app_name = @spec.name
       @app_ver  = @spec.version
       fail ConfigMissingParameter, "gemspec: missing name" unless @app_name
