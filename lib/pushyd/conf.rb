@@ -54,12 +54,6 @@ module PushyDaemon
       # Load configuration files
       load files: @files, namespaces: { environment: @env }
 
-      # Override some values
-      self[:log] ||= {}
-      if args[:logfile]
-        self[:log][:file] = args[:logfile].to_s
-      end
-
       # Init New Relic
       prepare_newrelic self[:newrelic]
 

@@ -34,6 +34,10 @@ begin
   # Build Chamber-based configuration from Gemspec with initial context
   Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, logfile: cmd_logfile
 
+  # Override log file
+  Conf[:log] ||= {}
+  Conf[:log][:file] = cmd_logfile.to_s if cmd_logfile
+
 rescue OptionParser::InvalidOption => e
   abort "EXITING: InvalidOption: #{e.message} \n #{e.backtrace.to_yaml}"
 rescue PushyDaemon::ConfigParseError => e
