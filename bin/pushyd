@@ -13,26 +13,26 @@ include PushyDaemon
 
 
 # Handle configuration
-APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../")
 begin
   # Defaults
   cmd_config = nil
   cmd_logfile = nil
-  cmd_env = "production"
-  cmd_dump = false
+
+  # Init Chamber-based configuration from Gemspec
+  Conf.init File.dirname(__FILE__) + "/../"
+  Conf.app_env = "production"
 
   # Parse options and check compliance
   OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
     opts.on("-l", "--log LOGFILE")           { |path| cmd_logfile = File.expand_path(path)}
     opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path)}
-    opts.on("-e", "--environment ENV")       { |env| cmd_env = env }
-    opts.on("-d", "--dump")                  { cmd_dump = true }
-    opts.on("",   "--dev")                   { cmd_env = "development" }
+    opts.on("-e", "--environment ENV")       { |env| Conf.app_env = env }
+    opts.on("",   "--dev")                   { Conf.app_env = "development" }
   end.order!(ARGV)
 
-  # Build Chamber-based configuration from Gemspec with initial context
-  Conf.prepare root: APP_ROOT, gemspec: "pushyd", env: cmd_env, config: cmd_config, logfile: cmd_logfile
+  # Load Chamber-based configuration
+  Conf.prepare config: cmd_config, logfile: cmd_logfile
 
   # Override log file
   Conf[:log] ||= {}
@@ -46,18 +46,13 @@ rescue StandardError => e
   abort "EXITING: StandardError: #{e.message} \n #{e.backtrace.to_yaml}"
 end
 
-# Display final configuration
-puts "--- #{Conf.name} #{Conf.version}"
-puts "Environment    \t #{Conf.env}"
+# Display final configuration, quit if config dump requested
+puts "--- #{Conf.app_name} #{Conf.app_ver}"
+puts "Environment    \t #{Conf.app_env}"
 puts "Config files   \t #{Conf.files}"
-puts "Loging to file \t #{Conf.log.file}"
+puts "Loging to file \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
 puts "YAML Parser    \t #{YAML.name}"
-
-# Quit if config dump requested
-if cmd_dump
-  puts Conf.dump
-  exit(0)
-end
+puts Conf.dump
 
 # Run daemon
 run_options = {
