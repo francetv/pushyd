@@ -55,7 +55,7 @@ module PushyDaemon
       add_extra_config args[:config]
 
       # Load configuration files
-      load files: @files, namespaces: { environment: @env }
+      load files: @files, namespaces: { environment: @app_env }
 
       # Init New Relic
       prepare_newrelic self[:newrelic]
@@ -84,20 +84,19 @@ module PushyDaemon
     end
 
     def self.add_etc_config
-      @files << File.expand_path("/etc/#{@name}.yml") if @name
+      @files << File.expand_path("/etc/#{@app_name}.yml") if @name
     end
 
     def self.add_extra_config path
-      @files << File.expand_path("/etc/#{@name}.yml") if path
+      @files << File.expand_path(path) if path
     end
 
     def self.prepare_newrelic section
+      # Disable NewRelic if no config present
       unless section.is_a?(Hash)
-        # puts "prepare_newrelic: no config found"
         ENV["NEWRELIC_AGENT_ENABLED"] = "false"
         return
       end
-      # puts "prepare_newrelic: #{section.inspect}"
 
       # Enable GC profiler
       GC::Profiler.enable
