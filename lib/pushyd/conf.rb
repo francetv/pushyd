@@ -1,8 +1,6 @@
 require "chamber"
 
 # FIXME: files named with hyphens will not be found by Chamber for now
-# FIXME: reloading of configuration from API
-
 class ConfigMissingParameter    < StandardError; end
 class ConfigOtherError          < StandardError; end
 class ConfigParseError          < StandardError; end
