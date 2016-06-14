@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency   "rake"
   spec.add_development_dependency   "rspec"
   spec.add_development_dependency   "http", "~> 2.0"
-  spec.add_development_dependency   "rubocop", "~> 0.32.0"
+  spec.add_development_dependency   "rubocop"
   # spec.add_development_dependency "pry"
 
   # Runtime dependencies
