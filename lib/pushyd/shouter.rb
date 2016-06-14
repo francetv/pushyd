@@ -36,8 +36,7 @@ module PushyDaemon
 
       # Send shouter info to logs
       shouter_info = { topic: @topic, period: @period, keys: @keys }
-      info "shouter initialized"
-      info shouter_info
+      info "shouter initialized", shouter_info
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
@@ -78,11 +77,7 @@ module PushyDaemon
       routing_key = keys.unshift(exchange_name).join('.')
 
       # Announce shout
-      message way: WAY_OUT,
-        exchange: exchange_name,
-        key: routing_key,
-        body: body,
-        attrs: {}
+      log_message WAY_OUT, exchange_name, routing_key, body
 
       # Publish
       @exchange.publish(body.to_json,

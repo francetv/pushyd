@@ -36,8 +36,7 @@ module PushyDaemon
       end
 
       # Send config table to logs
-      info "proxy initialized"
-      info @table.to_s.lines
+      info "proxy initialized", @table.to_s.lines
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
@@ -58,14 +57,10 @@ module PushyDaemon
       data = parse payload, metadata.content_type  #, rule
 
       # Announce match
-      message way: WAY_IN,
-        exchange: msg_exchange,
-        key: msg_rkey,
-        body: data,
-        attrs: {
-          'rule' => rule_name,
-          'app-id' => metadata.app_id,
-          'content-type' => metadata.content_type,
+      log_message WAY_IN, msg_exchange, msg_rkey, data, {
+        'rule' => rule_name,
+        'app-id' => metadata.app_id,
+        'content-type' => metadata.content_type,
         }
 
       # Build notification payload
@@ -87,10 +82,7 @@ module PushyDaemon
       id = SecureRandom.random_number(100)
 
       # Log message details
-      message way: WAY_POST,
-        exchange: id,
-        key: relay_url,
-        body: post_body
+      log_message WAY_POST, id, relay_url, post_body
 
       # Push message to URL
       response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json
