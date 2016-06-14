@@ -57,7 +57,7 @@ module PushyDaemon
       data = parse payload, metadata.content_type  #, rule
 
       # Announce match
-      log_message WAY_IN, msg_exchange, msg_rkey, data, {
+      log_message MSG_RECV, msg_exchange, msg_rkey, data, {
         'rule' => rule_name,
         'app-id' => metadata.app_id,
         'content-type' => metadata.content_type,
@@ -82,7 +82,7 @@ module PushyDaemon
       id = SecureRandom.random_number(100)
 
       # Log message details
-      log_message WAY_POST, id, relay_url, post_body
+      log_message WAY_PROP, id, relay_url, post_body
 
       # Push message to URL
       response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json

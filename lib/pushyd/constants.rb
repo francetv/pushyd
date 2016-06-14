@@ -1,7 +1,7 @@
 # Constants: global
-WAY_OUT   = "SENT"
-WAY_IN    = "RECD"
-WAY_POST  = "POST"
+MSG_SEND                = "SEND"
+MSG_RECV                = "RECV"
+WAY_PROP                = "PROP"
 
 # Constants: proxy
 PROXY_MESSAGE_MAX       = 1
