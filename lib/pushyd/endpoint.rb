@@ -41,7 +41,7 @@ module PushyDaemon
       @logger.formatter = Formatter
 
       # Set progname
-      @logger.progname = sprintf(LOG_FORMAT_PROGNAME, Process.pid, me.split('::').last)
+      @logger.progname = me.split('::').last
 
       # Set expected level
       @logger.level = case loglevel
