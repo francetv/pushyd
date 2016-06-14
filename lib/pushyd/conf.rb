@@ -25,8 +25,6 @@ class Conf
     attr_reader :spec
     attr_reader :files
     attr_reader :host
-    attr_reader :pidfile
-
   end
 
   def self.init app_root = nil
@@ -66,9 +64,6 @@ class Conf
 
     # Init New Relic
     prepare_newrelic self[:newrelic], self.at(:logs, :newrelic)
-
-    # Prepare PID file is not present
-    prepare_pidfile
 
     # Try to access any key to force parsing of the files
     self[:dummy]
@@ -114,8 +109,8 @@ protected
     @files << File.expand_path(path) if path
   end
 
-  def self.prepare_pidfile
-    self[:pidfile] ||= "/tmp/#{@app_name}-#{@host}-#{self[:port]}.pid"
+  def self.get_pidfile
+    self[:pidfile] || "/tmp/#{@app_name}-#{@host}-#{self[:port]}.pid"
   end
 
   def self.prepare_newrelic section, logfile
