@@ -9,7 +9,6 @@ begin
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
-include PushyDaemon
 
 
 # Handle configuration
