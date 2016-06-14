@@ -50,8 +50,9 @@ end
 puts "--- #{Conf.app_name} #{Conf.app_ver}"
 puts "Environment    \t #{Conf.app_env}"
 puts "Config files   \t #{Conf.files}"
+puts "Started at      \t #{Conf.app_started}"
 puts "Loging to file \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
-puts "YAML Parser    \t #{YAML.name}"
+puts
 puts Conf.dump
 
 # Run daemon
