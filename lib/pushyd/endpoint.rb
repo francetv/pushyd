@@ -11,7 +11,7 @@ module PushyDaemon
 
     def initialize
       # Prepare logger
-      init_logger Conf[:log]
+      init_logger Conf[:logs]
 
       # Done
       info "endpoint initialized"
@@ -27,7 +27,11 @@ module PushyDaemon
   protected
 
     def init_logger logconf
+      # Check structure conformity or set it to an empty hash
+      logconf = {} unless logconf.is_a? Hash
+
       # Extract context
+      logconf ||= {}
       logfile   = logconf[:file]
       loglevel  = logconf[:level]
       me        = self.class.name
