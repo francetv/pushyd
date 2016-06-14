@@ -49,7 +49,7 @@ module PushyDaemon
       loop do
         random_string = SecureRandom.hex
         random_key = @keys.sample || "random"
-        channel_shout [:ping, random_key, random_string], {}
+        channel_shout [:ping, random_key, random_string], {dummy: true, time: Time.now.to_f, host: Conf.host}
         sleep @period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
