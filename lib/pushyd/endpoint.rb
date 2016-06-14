@@ -63,36 +63,31 @@ module PushyDaemon
       end
     end
 
-    def error messages
-      @logger.error messages
+    def info message, lines = []
+      @logger.info message
+      debug_lines lines
     end
 
-    def info messages
-      @logger.info messages
+    def error messages
+      @logger.error messages
     end
 
     def debug messages
       @logger.debug messages
     end
 
-    def message params = {}
-      # Header
-      @logger.info sprintf(
-        "%3s %-15s %s",
-        params[:way],
-        params[:exchange],
-        params[:key]
-        )
+    def log_message msg_way, msg_exchange, msg_key, msg_body = [], msg_attrs = {}
+      # Message header
+      @logger.info sprintf("%3s %-15s %s", msg_way, msg_exchange, msg_key)
 
-      # Attributes
-      @logger.debug params[:attrs] if params[:attrs].is_a?(Hash)
-
-      # Body (split in lines to log them separately)
-      if params[:body].is_a?(Enumerable) && !params[:body].empty?
-        body_json = JSON.pretty_generate(params[:body])
-        #puts "log? #{params[:body]} "
-        @logger.debug body_json.lines
+      # Body lines
+      if msg_body.is_a?(Enumerable) && !msg_body.empty?
+        body_json = JSON.pretty_generate(msg_body)
+        debug_lines body_json.lines
       end
+
+      # Attributes lines
+      log_lines msg_attrs
     end
 
     # Start connexion to RabbitMQ
@@ -169,6 +164,16 @@ module PushyDaemon
     end
 
     def handle_message rule, delivery_info, metadata, payload
+    end
+
+  private
+
+    def debug_lines lines
+      if lines.is_a? Array
+        @logger.debug lines.map{ |line| sprintf(LOG_FORMAT_ARRAY, line) }
+      elsif lines.is_a? Hash
+        @logger.debug lines.map{ |key, value| sprintf(LOG_FORMAT_HASH, key, value) }
+      end
     end
 
   end
