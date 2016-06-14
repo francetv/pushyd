@@ -87,7 +87,7 @@ module PushyDaemon
       end
 
       # Attributes lines
-      log_lines msg_attrs
+      debug_lines msg_attrs
     end
 
     # Start connexion to RabbitMQ
