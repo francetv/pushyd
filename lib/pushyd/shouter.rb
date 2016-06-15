@@ -69,7 +69,7 @@ module PushyDaemon
       # Prepare headers
       headers = {
         sent_at: DateTime.now.iso8601,
-        sent_by: Conf.name,
+        sent_by: Conf.app_name,
         }
 
       # Prepare exchange_name and routing_key
@@ -83,7 +83,7 @@ module PushyDaemon
       @exchange.publish(body.to_json,
         routing_key: routing_key,
         headers: headers,
-        app_id: Conf.name,
+        app_id: Conf.app_name,
         content_type: "application/json",
         )
     end
