@@ -63,17 +63,15 @@ module PushyDaemon
       end
     end
 
+    def debug messages
+      @logger.debug messages
+    end
     def info message, lines = []
       @logger.info message
       debug_lines lines
     end
-
     def error messages
       @logger.error messages
-    end
-
-    def debug messages
-      @logger.debug messages
     end
 
     def log_message msg_way, msg_exchange, msg_key, msg_body = [], msg_attrs = {}
@@ -168,11 +166,11 @@ module PushyDaemon
 
   private
 
-    def debug_lines lines
+    def debug_lines lines, prefix = ''
       if lines.is_a? Array
-        @logger.debug lines.map{ |line| sprintf(LOG_FORMAT_ARRAY, line) }
+        @logger.debug lines.map{ |line| sprintf(LOG_FORMAT_ARRAY, prefix, line) }
       elsif lines.is_a? Hash
-        @logger.debug lines.map{ |key, value| sprintf(LOG_FORMAT_HASH, key, value) }
+        @logger.debug lines.map{ |key, value| sprintf(LOG_FORMAT_HASH, prefix, key, value) }
       end
     end
 
