@@ -113,7 +113,7 @@ protected
 
   def self.prepare_newrelic section, logfile
     # Disable NewRelic if no config present
-    unless section.is_a?(Hash)
+    unless section.is_a?(Hash) && section[:licence]
       ENV["NEWRELIC_AGENT_ENABLED"] = "false"
       return
     end
