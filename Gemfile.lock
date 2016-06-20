@@ -23,7 +23,7 @@ GEM
       thor (~> 0.19.1)
     daemons (1.2.3)
     diff-lcs (1.2.5)
-    domain_name (0.5.20160310)
+    domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
     hashie (3.4.4)
     http (2.0.1)
