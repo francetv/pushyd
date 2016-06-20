@@ -17,7 +17,7 @@ module PushyDaemon
       # Check config
       config_shout = Conf[:shout]
       unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
-        error "prepare: empty [shout] section"
+        log_error "prepare: empty [shout] section"
         return
       end
 
@@ -28,7 +28,7 @@ module PushyDaemon
 
       # Start connexion to RabbitMQ and create channel
       @channel = connect_channel Conf.bus
-      info "channel connected"
+      log_info "channel connected"
 
       # Create exchange
       fail PushyDaemon::EndpointTopicContext unless @topic
@@ -36,10 +36,10 @@ module PushyDaemon
 
       # Send shouter info to logs
       shouter_info = { topic: @topic, period: @period, keys: @keys }
-      info "shouter initialized", shouter_info
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
+      log_info "shouter initialized", shouter_info
     end
 
     def shout
@@ -64,10 +64,6 @@ module PushyDaemon
     end
 
   protected
-
-    # def log_prefix
-    #   ['shouter']
-    # end
 
   private
 

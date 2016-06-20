@@ -16,21 +16,10 @@ module PushyDaemon
       init_logger Conf[:logs]
 
       # Done
-      info "endpoint initialized"
-      # loop do
-      #   info "info"
-      #   info ["info1", "info2", "info3"]
-      #   error "error"
-      #   debug "debug"
-      #   sleep 1
-      # end
+      log_info "endpoint initialized"
     end
 
   protected
-
-    # def log_prefix
-    #   ['endpoint']
-    # end
 
     def init_logger logconf
       # Check structure conformity or set it to an empty hash

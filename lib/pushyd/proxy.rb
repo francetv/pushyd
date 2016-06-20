@@ -19,14 +19,14 @@ module PushyDaemon
 
       # Start connexion to RabbitMQ and create channel
       @channel = connect_channel Conf.bus
-      info "channel connected"
+      log_info "channel connected"
 
       # Check config
       config_rules = Conf[:rules]
       if config_rules.nil? || !config_rules.is_a?(Hash)
-        error "prepare: empty [rules] section"
+        log_error "prepare: empty [rules] section"
       else
-        info "found rules: #{config_rules.keys.join(', ')}"
+        log_info "found rules: #{config_rules.keys.join(', ')}"
 
         # Subsribe for each and every rule/route
         config_rules.each do |name, rule|
@@ -36,17 +36,13 @@ module PushyDaemon
       end
 
       # Send config table to logs
-      info "proxy initialized", @table.to_s.lines
 
     rescue Bunny::TCPConnectionFailedForAllHosts => e
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
+      log_info "proxy initialized", @table.to_s.lines
     end
 
   protected
-
-    def log_prefix
-      ['proxy']
-    end
 
   private
 
@@ -94,10 +90,10 @@ module PushyDaemon
 
       # Push message to URL
       response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json
-      info "#{id}: #{response.body}"
+      log_info "#{id}: #{response.body}"
 
       rescue StandardError => e
-        error "propagate: #{e.message}"
+        log_error "propagate: #{e.message}"
     end
 
     def parse payload, content_type #, fields = []
@@ -116,7 +112,7 @@ module PushyDaemon
 
     # Handle body parse errors
     rescue Encoding::UndefinedConversionError => e
-      error "parse: JSON PARSE ERROR: #{e.inspect}"
+      log_error "parse: JSON PARSE ERROR: #{e.inspect}"
       return {}
     end
 
