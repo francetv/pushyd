@@ -8,6 +8,8 @@ module PushyDaemon
   class EndpointSubscribeError      < StandardError; end
 
   class Endpoint
+    include Shared::LoggerHelper
+    attr_reader :logger
 
     def initialize
       # Prepare logger
@@ -67,29 +69,18 @@ module PushyDaemon
       end
     end
 
-    def debug messages
-      @logger.debug messages
-    end
-    def info message, lines = []
-      @logger.info message
-      debug_lines lines
-    end
-    def error messages
-      @logger.error messages
-    end
-
     def log_message msg_way, msg_exchange, msg_key, msg_body = [], msg_attrs = {}
       # Message header
-      @logger.info sprintf("%3s %-15s %s", msg_way, msg_exchange, msg_key)
+      info sprintf("%3s %-15s %s", msg_way, msg_exchange, msg_key)
 
       # Body lines
       if msg_body.is_a?(Enumerable) && !msg_body.empty?
         body_json = JSON.pretty_generate(msg_body)
-        debug_lines body_json.lines
+        log_debug nil, body_json.lines
       end
 
       # Attributes lines
-      debug_lines msg_attrs
+      log_debug nil, msg_attrs if msg_attrs
     end
 
     # Start connexion to RabbitMQ
@@ -168,15 +159,9 @@ module PushyDaemon
     def handle_message rule, delivery_info, metadata, payload
     end
 
-  private
-
-    def debug_lines lines, prefix = ''
-      if lines.is_a? Array
-        @logger.debug lines.map{ |line| sprintf(LOG_FORMAT_ARRAY, prefix, line) }
-      elsif lines.is_a? Hash
-        @logger.debug lines.map{ |key, value| sprintf(LOG_FORMAT_HASH, prefix, key, value) }
-      end
     end
+
+  private
 
   end
 end
