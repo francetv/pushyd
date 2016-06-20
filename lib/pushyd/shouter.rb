@@ -63,6 +63,12 @@ module PushyDaemon
       fail PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
     end
 
+  protected
+
+    # def log_prefix
+    #   ['shouter']
+    # end
+
   private
 
     def channel_shout keys, body = {}

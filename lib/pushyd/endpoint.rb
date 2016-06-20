@@ -26,6 +26,10 @@ module PushyDaemon
 
   protected
 
+    # def log_prefix
+    #   ['endpoint']
+    # end
+
     def init_logger logconf
       # Check structure conformity or set it to an empty hash
       logconf = {} unless logconf.is_a? Hash

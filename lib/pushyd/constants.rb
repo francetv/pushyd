@@ -9,9 +9,15 @@ PROXY_USE_ACK           = false
 
 # Constants: logger
 LOG_ROTATION            = "daily"
-LOG_TRIM_LINE           = 200
-LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
-LOG_FORMAT_HEADER       = "%s \t%d\t%-8s %-15s "
-LOG_FORMAT_ARRAY        = "%s     %s"
-LOG_FORMAT_HASH         = "%s     %-15s %s\n"
+
+LOG_HEADER_TIME         = "%Y-%m-%d %H:%M:%S"
+LOG_HEADER_FORMAT       = "%s \t%d\t%-8s %-15s "
+LOG_MESSAGE_TRIM        = 100
+LOG_MESSAGE_TEXT        = "%s%s"
+LOG_MESSAGE_ARRAY       = "%s     %s"
+LOG_MESSAGE_HASH        = "%s     %-15s %s\n"
+
+# Constants: logger app-specific prefix
+LOG_PREFIX_FORMAT       = nil
+
 

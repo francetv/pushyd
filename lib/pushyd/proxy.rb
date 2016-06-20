@@ -42,6 +42,12 @@ module PushyDaemon
       error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
     end
 
+  protected
+
+    def log_prefix
+      ['proxy']
+    end
+
   private
 
     # Handle the reception of a message on a queue
