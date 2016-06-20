@@ -42,7 +42,7 @@ module PushyDaemon
 
       # Prepare logger (may be NIL > won't output anything)
       @logger = Logger.new(logfile, LOG_ROTATION)
-      @logger.formatter = Formatter
+      @logger.formatter = Shared::LoggerFormatter
 
       # Set progname
       @logger.progname = me.split('::').last
