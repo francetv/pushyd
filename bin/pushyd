@@ -62,7 +62,7 @@ run_options = {
   :backtrace  => true,
   :multiple   => false
   }
-Daemons.run_proc('pushy-daemon', run_options) do
+Daemons.run_proc(Conf.app_name, run_options) do
   # Load code
   puts "--- load code"
   require_relative "../lib/pushyd"
