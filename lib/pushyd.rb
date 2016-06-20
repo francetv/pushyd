@@ -10,9 +10,9 @@ require "newrelic_rpm"
 # Shared libs
 require_relative "shared/logger_formatter"
 require_relative "shared/logger_helper"
+require_relative "shared/conf"
 
 # Project libs
-require_relative "pushyd/conf"
 require_relative "pushyd/constants"
 require_relative "pushyd/endpoint"
 require_relative "pushyd/proxy"

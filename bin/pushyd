@@ -5,10 +5,11 @@ begin
   require "rubygems"
   require "optparse"
   require 'daemons'
-  require_relative "../lib/pushyd/conf"
+  require_relative "../lib/shared/conf"
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
+include Shared
 
 
 # Handle configuration
