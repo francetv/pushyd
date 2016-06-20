@@ -36,9 +36,6 @@ module PushyDaemon
       end
 
       # Send config table to logs
-
-    rescue Bunny::TCPConnectionFailedForAllHosts => e
-      error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
       log_info "proxy initialized", @table.to_s.lines
     end
 

@@ -36,9 +36,6 @@ module PushyDaemon
 
       # Send shouter info to logs
       shouter_info = { topic: @topic, period: @period, keys: @keys }
-
-    rescue Bunny::TCPConnectionFailedForAllHosts => e
-      error "ERROR: cannot connect to RabbitMQ hosts (#{e.inspect})"
       log_info "shouter initialized", shouter_info
     end
 
