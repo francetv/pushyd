@@ -85,7 +85,9 @@ module PushyDaemon
     def propagate relay_url, post_body
       # Nothing more to do if no relay
       return if relay_url.nil? || relay_url.empty?
-      id = SecureRandom.random_number(100)
+
+      # Generate a unique identifier
+      id = identifier(6)
 
       # Log message details
       log_message WAY_PROP, id, relay_url, post_body
@@ -97,8 +99,6 @@ module PushyDaemon
       rescue StandardError => e
         error "propagate: #{e.message}"
     end
-
-  private
 
     def parse payload, content_type #, fields = []
       # Force encoding (pftop...)

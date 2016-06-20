@@ -159,6 +159,8 @@ module PushyDaemon
     def handle_message rule, delivery_info, metadata, payload
     end
 
+    def identifier len
+      rand(36**len).to_s(36)
     end
 
   private
