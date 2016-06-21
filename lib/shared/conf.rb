@@ -27,10 +27,10 @@ module Shared
       attr_reader :host
     end
 
-    def self.init app_root = nil
       # Defaults, hostname
       @files        = []
       @app_env      = "production"
+    def self.init app_root
       @app_started  = Time.now
       @host         = `hostname`.to_s.chomp.split(".").first
 
