@@ -49,10 +49,10 @@ end
 
 # Display final configuration, quit if config dump requested
 puts "--- #{Conf.app_name} #{Conf.app_ver}"
-puts "Environment       #{Conf.app_env}"
-puts "Config files      #{Conf.files}"
-puts "Started at        #{Conf.app_started}"
-puts "Loging to file    #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
+puts "Environment     \t #{Conf.app_env}"
+puts "Config files    \t #{Conf.files}"
+puts "Started at      \t #{Conf.app_started}"
+puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
 puts "Process name    \t #{Conf.gen_process_name}"
 puts
 puts Conf.dump

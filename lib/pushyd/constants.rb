@@ -15,7 +15,7 @@ LOG_HEADER_FORMAT       = "%s \t%d\t%-8s %-15s "
 LOG_MESSAGE_TRIM        = 200
 LOG_MESSAGE_TEXT        = "%s%s"
 LOG_MESSAGE_ARRAY       = "%s     %s"
-LOG_MESSAGE_HASH        = "%s     %-15s %s\n"
+LOG_MESSAGE_HASH        = "%s     %-20s %s\n"
 
 # Constants: logger app-specific prefix
 LOG_PREFIX_FORMAT       = nil
