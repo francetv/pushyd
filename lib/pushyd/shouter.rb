@@ -57,7 +57,7 @@ module PushyDaemon
       fail PushyDaemon::ShouterPreconditionFailed, "#{e.class} (#{e.inspect})"
     rescue Interrupt => e
       @channel.close
-      fail PushyDaemon::ShouterInterrupted, "#{e.class} (#{e.inspect})"
+      fail PushyDaemon::ShouterInterrupted, e.class
     end
 
   protected
