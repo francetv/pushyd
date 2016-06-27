@@ -1,8 +1,7 @@
+# FIXME: files named with hyphens will not be found by Chamber for now
 require "chamber"
 
 module Shared
-
-  # FIXME: files named with hyphens will not be found by Chamber for now
   class ConfigMissingParameter    < StandardError; end
   class ConfigOtherError          < StandardError; end
   class ConfigParseError          < StandardError; end
@@ -14,17 +13,15 @@ module Shared
 
     class << self
       attr_accessor :app_env
+      attr_reader   :app_root
+      attr_reader   :app_libs
+      attr_reader   :app_name
+      attr_reader   :app_ver
+      attr_reader   :app_started
+      attr_reader   :app_spec
+      attr_reader   :files
+      attr_reader   :host
 
-      attr_reader :app_root
-      attr_reader :app_libs
-
-      attr_reader :app_name
-      attr_reader :app_ver
-      attr_reader :app_started
-
-      attr_reader :spec
-      attr_reader :files
-      attr_reader :host
     end
 
       # Defaults, hostname
@@ -58,6 +55,8 @@ module Shared
     end
 
     def self.prepare args = {}
+      ensure_init
+
       # Add extra config file
       add_extra_config args[:config]
 
@@ -77,27 +76,33 @@ module Shared
     end
 
     def self.reload!
+      ensure_init
       load_files
     end
 
     def self.dump
+      ensure_init
       to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
     end
 
     # Direct access to any depth
     def self.at *path
+      ensure_init
       path.reduce(Conf) { |m, key| m && m[key.to_s] }
     end
 
     def self.newrelic_enabled?
+      ensure_init
       !!self[:newrelic]
     end
 
     # Defaults generators
     def self.gen_pidfile
+      ensure_init
       "/tmp/#{@app_name}-#{@host}-#{Process.pid}.pid"
     end
     def self.gen_process_name
+      ensure_init
       "#{@app_name}/#{@app_env}/#{Process.pid}"
     end
   protected
@@ -148,6 +153,15 @@ module Shared
       ENV["NEW_RELIC_LOG"] = logfile.to_s if logfile
     end
 
-  end
+  private
 
+    def self.ensure_init
+      # Skip is already done
+      return if @initialized
+
+      # Go through init if not already done
+      self.init
+    end
+
+  end
 end
