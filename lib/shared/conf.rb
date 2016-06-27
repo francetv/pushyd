@@ -24,15 +24,19 @@ module Shared
 
     end
 
-      # Defaults, hostname
-      @files        = []
-      @app_env      = "production"
     def self.init app_root
+      # Permanent flags
+      @initialized  = true
       @app_started  = Time.now
-      @host         = `hostname`.to_s.chomp.split(".").first
 
-      # Grab app root
-      @app_root = File.expand_path( File.dirname(__FILE__) + "/../../")
+      # Default values
+      @files        ||= []
+      @app_name     ||= "app_name"
+      @app_env      ||= "production"
+      @host         ||= `hostname`.to_s.chomp.split(".").first
+
+      # Store and clean app_root
+      @app_root = File.expand_path(app_root)
 
       # Try to find any gemspec file
       matches   = Dir["#{@app_root}/*.gemspec"]
@@ -52,6 +56,9 @@ module Shared
       # Add other config files
       add_default_config
       add_etc_config
+
+      # Return something
+      return @app_name
     end
 
     def self.prepare args = {}
@@ -75,6 +82,7 @@ module Shared
       fail ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
     end
 
+    # Reload files
     def self.reload!
       ensure_init
       load_files
@@ -105,6 +113,24 @@ module Shared
       ensure_init
       "#{@app_name}/#{@app_env}/#{Process.pid}"
     end
+    def self.gen_config_etc
+      ensure_init
+      "/etc/#{@app_name}.yml"
+    end
+    def self.gen_config_sample
+      ensure_init
+      "#{@app_root}/#{@app_name}.sample.yml"
+    end
+    def self.gen_config_message
+      config_etc = gen_config_etc
+      config_sample = gen_config_sample
+      return "
+A default configuration is available here: #{config_sample}.
+You should copy it to the default location: #{config_etc}.
+sudo cp #{config_sample} #{config_etc}
+"
+    end
+
   protected
 
     def self.load_files
@@ -121,10 +147,6 @@ module Shared
 
     def self.add_extra_config path
       @files << File.expand_path(path) if path
-    end
-
-    def self.get_pidfile
-      self[:pidfile] || "/tmp/#{@app_name}-#{@host}-#{self[:port]}.pid"
     end
 
     def self.prepare_newrelic section, logfile
