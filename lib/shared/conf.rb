@@ -93,6 +93,13 @@ module Shared
       !!self[:newrelic]
     end
 
+    # Defaults generators
+    def self.gen_pidfile
+      "/tmp/#{@app_name}-#{@host}-#{Process.pid}.pid"
+    end
+    def self.gen_process_name
+      "#{@app_name}/#{@app_env}/#{Process.pid}"
+    end
   protected
 
     def self.load_files
