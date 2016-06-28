@@ -116,17 +116,20 @@ module Shared
       return case what
 
       when :user_agent
-        "#{@app_name}/#{@app_ver}"
+        "#{@app_name}/#{@app_ver}" if @app_name && @app_ver
+
+      when :config_defaults
+        "#{@app_root}/defaults.yml" if @app_root
 
       when :config_etc
-        "/etc/#{@app_name}.yml"
+        "/etc/#{@app_name}.yml" if @app_name
 
       when :process_name
         parts = [@app_name, @app_env]
         parts << self[:port] if self[:port]
         parts.join('-')
 
-      when :default_pidfile
+      when :pidfile
         File.expand_path sprintf(
           "%s/%s.pid",
           CONF_PIDFILE_BASE_DIR,
@@ -149,6 +152,7 @@ module Shared
   protected
 
     def self.load_files
+      puts "load_files"
       load files: @files, namespaces: { environment: @app_env }
     end
 
