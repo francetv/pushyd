@@ -23,13 +23,14 @@ begin
   Conf.app_env = "production"
 
   # Parse options and check compliance
-  OptionParser.new do |opts|
+  parser = OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
     opts.on("-l", "--log LOGFILE")           { |path| cmd_logfile = File.expand_path(path)}
     opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path)}
     opts.on("-e", "--environment ENV")       { |env| Conf.app_env = env }
     opts.on("",   "--dev")                   { Conf.app_env = "development" }
-  end.order!(ARGV)
+  end
+  parser.order!(ARGV)
 
   # Load Chamber-based configuration
   Conf.prepare config: cmd_config, logfile: cmd_logfile
@@ -59,9 +60,12 @@ puts Conf.dump
 
 # Run daemon
 run_options = {
+monitor: false,
   ontop: false,
-  :backtrace  => true,
-  :multiple   => false
+  backtrace: true,
+  multiple: false,
+  dir_mode: :normal,
+  dir: '/tmp/'
   }
 Daemons.run_proc(Conf.generate(:process_name), run_options) do
   # Load code
