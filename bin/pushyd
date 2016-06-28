@@ -53,7 +53,7 @@ puts "Environment     \t #{Conf.app_env}"
 puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
 puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
-puts "Process name    \t #{Conf.gen_process_name}"
+puts "Process name    \t #{Conf.generate(:process_name)}"
 puts
 puts Conf.dump
 
@@ -63,7 +63,7 @@ run_options = {
   :backtrace  => true,
   :multiple   => false
   }
-Daemons.run_proc(Conf.gen_process_name, run_options) do
+Daemons.run_proc(Conf.generate(:process_name), run_options) do
   # Load code
   puts "--- load code"
   require_relative "../lib/pushyd"

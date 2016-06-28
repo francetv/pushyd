@@ -1,5 +1,7 @@
 # FIXME: files named with hyphens will not be found by Chamber for now
 require "chamber"
+CONF_PIDFILE_BASE_DIR = "/tmp/"
+
 
 module Shared
   class ConfigMissingParameter    < StandardError; end
@@ -108,31 +110,40 @@ module Shared
     end
 
     # Defaults generators
-    def self.gen_pidfile
+    def self.generate what
       ensure_init
-      "/tmp/#{@app_name}-#{@host}-#{Process.pid}.pid"
+      return case what
+
+      when :user_agent
+        "#{@app_name}/#{@app_ver}"
+
+      when :config_etc
+        "/etc/#{@app_name}.yml"
+
+      when :process_name
+        parts = [@app_name, @app_env]
+        parts << self[:port] if self[:port]
+        parts.join('-')
+
+      when :default_pidfile
+        File.expand_path sprintf(
+          "%s/%s.pid",
+          CONF_PIDFILE_BASE_DIR,
+          self.generate(:process_name)
+          )
+
+      when :config_message
+        config_etc = self.generate(:config_etc)
+        config_sample = "#{@app_root}/#{@app_name}.sample.yml"
+
+        "A default configuration is available here: #{config_sample}.
+        You should copy it to the default location: #{config_etc}.
+        sudo cp #{config_sample} #{config_etc}"
+
+      end
+
     end
-    def self.gen_process_name
-      ensure_init
-      "#{@app_name}/#{@app_env}/#{Process.pid}"
-    end
-    def self.gen_config_etc
-      ensure_init
-      "/etc/#{@app_name}.yml"
-    end
-    def self.gen_config_sample
-      ensure_init
-      "#{@app_root}/#{@app_name}.sample.yml"
-    end
-    def self.gen_config_message
-      config_etc = gen_config_etc
-      config_sample = gen_config_sample
-      return "
-A default configuration is available here: #{config_sample}.
-You should copy it to the default location: #{config_etc}.
-sudo cp #{config_sample} #{config_etc}
-"
-    end
+
 
   protected
 
@@ -145,7 +156,8 @@ sudo cp #{config_sample} #{config_etc}
     end
 
     def self.add_etc_config
-      @files << File.expand_path("/etc/#{@app_name}.yml") if @app_name
+      config_etc = self.generate(:config_etc)
+      @files << config_etc if config_etc
     end
 
     def self.add_extra_config path
