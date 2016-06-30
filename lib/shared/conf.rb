@@ -65,14 +65,16 @@ module Shared
     def self.prepare args = {}
       ensure_init
 
-      # Add extra config file
+      # Add extra config file and load them all
       add_config args[:config]
-
-      # Load configuration files
       reload!
 
       # Set Rack env
       ENV["RACK_ENV"] = @app_env.to_s
+
+      # Set up encodings
+      Encoding.default_internal = "utf-8"
+      Encoding.default_external = "utf-8"
 
       # Init New Relic
       newrelic_logfile = File.expand_path(Conf[:logs][:newrelic], Conf[:logs][:path])
@@ -133,28 +135,22 @@ module Shared
         File.expand_path "#{process_name}.pid", PIDFILE_DIR
 
       when :config_message
+        config_defaults = self.generate(:config_defaults)
         config_etc = self.generate(:config_etc)
-        config_sample = "#{@app_root}/#{@app_name}.sample.yml"
 
-        "A default configuration is available here: #{config_sample}.
-        You should copy it to the default location: #{config_etc}.
-        sudo cp #{config_sample} #{config_etc}"
+        "A default configuration is available (#{config_defaults}) and can be copied to the default location (#{config_etc}): \n sudo cp #{config_defaults} #{config_etc}"
 
       end
-
     end
 
 
   protected
 
     def self.load_files
-      puts "load_files"
       load files: @files, namespaces: { environment: @app_env }
     end
 
-
     def self.add_config path
-      puts "add_config: #{path}"
       @files << File.expand_path(path) if path && File.readable?(path)
     end
 
