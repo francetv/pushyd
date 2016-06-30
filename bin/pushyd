@@ -25,8 +25,8 @@ begin
   # Parse options and check compliance
   parser = OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
-    opts.on("-l", "--log LOGFILE")           { |path| cmd_logfile = File.expand_path(path)}
-    opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path)}
+    opts.on("-l", "--log LOGFILE")           { |path| cmd_logfile = File.expand_path(path.to_s)}
+    opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path.to_s)}
     opts.on("-e", "--environment ENV")       { |env| Conf.app_env = env }
     opts.on("",   "--dev")                   { Conf.app_env = "development" }
   end
