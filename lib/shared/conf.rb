@@ -22,7 +22,6 @@ module Shared
       attr_reader   :app_spec
       attr_reader   :files
       attr_reader   :host
-
     end
 
     def self.init app_root
@@ -52,7 +51,7 @@ module Shared
       fail ConfigMissingParameter, "gemspec: missing version" unless @app_ver
 
       # Now we know app_name, initalize app_libs
-      @app_libs = File.expand_path( @app_root + "/lib/#{@app_name}/" )
+      @app_libs = File.expand_path("lib/#{@app_name}/", @app_root)
 
       # Add other config files
       #add_default_config
