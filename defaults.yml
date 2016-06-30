@@ -6,13 +6,14 @@ bus:
   pass: guest
 
 logs:
+  path: '/tmp/'
   file: null
   newrelic: null
   level: debug
 
 shout:
   topic: pushyd
-  period: 2
+  period: 10
   # keys:
   #   - tic
   #   - tac
