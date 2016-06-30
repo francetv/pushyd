@@ -48,7 +48,6 @@ module PushyDaemon
     def handle_message rule, delivery_info, metadata, payload
       # Prepare data
       rule_name = rule[:name]
-      rule_relay = rule[:relay]
       msg_exchange = delivery_info.exchange
       msg_rkey = delivery_info.routing_key.force_encoding('UTF-8')
       msg_headers = metadata.headers || {}
@@ -64,7 +63,7 @@ module PushyDaemon
         }
 
       # Build notification payload
-      post_body = {
+      propagate_data = {
         exchange: msg_exchange,
         route: msg_rkey,
         sent_at: msg_headers['sent_at'],
@@ -73,7 +72,7 @@ module PushyDaemon
         }
 
       # Propagate data if needed
-      propagate rule_relay, post_body if rule_relay
+      propagate rule, propagate_data
     end
 
     def propagate rule, data
