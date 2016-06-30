@@ -1,3 +1,4 @@
+require 'api_auth'
 require 'rest_client'
 require 'terminal-table'
 
@@ -75,22 +76,60 @@ module PushyDaemon
       propagate rule_relay, post_body if rule_relay
     end
 
-    def propagate relay_url, post_body
+    def propagate rule, data
       # Nothing more to do if no relay
-      return if relay_url.nil? || relay_url.empty?
+      return if rule[:relay].nil? || rule[:relay].empty?
 
-      # Generate a unique identifier
+      # Prepare stuff
+      relay_auth = rule[:auth].to_s
+      relay_uri = URI(rule[:relay])
+      relay_url = relay_uri.to_s
       id = identifier(6)
+      # log_info "propagate: user[#{relay_uri.user}] url[#{relay_url}]"
 
-      # Log message details
-      log_message WAY_PROP, id, relay_url, post_body
+      # Build POST body and log message
+      post_body = JSON.pretty_generate(data)
+      log_message WAY_PROP, id, relay_url, data
 
-      # Push message to URL
-      response = RestClient.post relay_url.to_s, JSON.pretty_generate(post_body), :content_type => :json
-      log_info "#{id}: #{response.body}"
+      # Prepare request
+      request = RestClient::Request.new url: relay_url,
+        method: :post,
+        payload: post_body,
+        headers: {
+          content_type: :json,
+          accept: :json,
+          user_agent: Conf.generate(:user_agent),
+          }
 
+      # Accordong to auth type
+      # log_info "propagate: auth[#{relay_auth}] class[#{relay_auth.class}]"
+
+      if !rule["hmac-user"]
+        # log_info "propagate: normal"
+
+      elsif !rule["hmac-secret"]
+        log_error "propagate: hmac: missing secret"
+        return
+      else
+        log_info "propagate: hmac: signing request"
+        request = ApiAuth.sign!(request, rule["hmac-user"].to_s, rule["hmac-secret"].to_s)
+      end
+
+      # Send request
+      log_info "propagate: url", request.headers
+      response = request.execute
+
+      # Handle exceptions
+      rescue RestClient::ExceptionWithResponse, URI::InvalidURIError => e
+        log_error "propagate: rest-client: #{e.message}"
+      rescue RestClient::InternalServerError => e
+        log_error "propagate: rest-client: #{e.message}"
+      rescue ApiAuth::ApiAuthError, ApiAuth::UnknownHTTPRequest => e
+        log_error "propagate: api-auth: #{e.message}"
+      rescue Errno::ECONNREFUSED => e
+        log_error "propagate: connection refused: #{e.message}"
       rescue StandardError => e
-        log_error "propagate: #{e.message}"
+        log_error "propagate: unknown: #{e.message}, #{e.inspect}", e.backtrace
     end
 
     def parse payload, content_type #, fields = []

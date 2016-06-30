@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny", "~> 2.3"
   spec.add_runtime_dependency       "rest-client", "~> 1.8"
+  spec.add_runtime_dependency       "api-auth"
   spec.add_runtime_dependency       "terminal-table"
   spec.add_runtime_dependency       "newrelic_rpm"
 end
