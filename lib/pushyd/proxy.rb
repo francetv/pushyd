@@ -4,6 +4,7 @@ require 'terminal-table'
 
 module PushyDaemon
   class Proxy < Endpoint
+    include Shared::HmacSignature
 
     attr_accessor :table
 
@@ -160,3 +161,4 @@ module PushyDaemon
 
   end
 end
+
