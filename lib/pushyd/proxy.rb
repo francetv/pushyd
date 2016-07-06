@@ -101,22 +101,15 @@ module PushyDaemon
           user_agent: Conf.generate(:user_agent),
           }
 
-      # Accordong to auth type
-      # log_info "propagate: auth[#{relay_auth}] class[#{relay_auth.class}]"
+      # Compute payload MD5
+      headers_md5 request
 
-      if !rule["hmac-user"]
-        # log_info "propagate: normal"
-
-      elsif !rule["hmac-secret"]
-        log_error "propagate: hmac: missing secret"
-        return
-      else
-        log_info "propagate: hmac: signing request"
-        request = ApiAuth.sign!(request, rule["hmac-user"].to_s, rule["hmac-secret"].to_s)
-      end
+      # Compute HMAC signature
+      headers_sign request, rule['hmac-method'], rule['hmac-user'], rule['hmac-secret'], [:date]
 
       # Send request
-      log_info "propagate: url", request.headers
+      log_info "propagate: #{relay_url}", request.headers
+
       response = request.execute
 
       # Handle exceptions

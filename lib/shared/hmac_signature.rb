@@ -7,14 +7,14 @@ module Shared
     def headers_sign request, hmac_method, hmac_user, hmac_secret, names = ['date']
       return unless hmac_user
       unless hmac_secret && hmac_method
-        log_error "propagate: hmac: missing secret or method"
+        log_error "headers_sign: hmac: missing secret or method"
         return
       end
 
       # OK, lets go
-      log_info "hmac signature for user[#{hmac_user}] secret[#{hmac_secret}] method[#{hmac_method}]", request.headers
+      log_info "headers_sign: before: user[#{hmac_user}] secret[#{hmac_secret}] method[#{hmac_method}]", request.headers
       hmac_sign_kong request.headers, hmac_user, hmac_secret, names
-      log_info "headers after", request.headers
+      log_info "headers_sign: after:", request.headers
     end
 
     def headers_md5 request
@@ -27,17 +27,18 @@ module Shared
       # Update date
       headers['Date'] = Time.now.strftime('%a, %d %b %Y %H:%M:%S GMT')
       # headers['Content-MD5'] = Date.now.strftime('%a, %d %b %Y %H:%M:%S GMT')
-      log_debug "headers: #{headers.inspect}"
+      # log_debug "hmac_sign_kong: headers", headers
 
       # Filter headers we're going to hash
       myheaders = hmac_headers_filter headers, names
 
       # Signe string of headers
       headers_signature = hmac_headers_hash myheaders, client_secret
-      log_debug "headers_signature: #{headers_signature}"
+      log_debug "hmac_sign_kong #{myheaders.keys.inspect} #{headers_signature}"
 
       # Add auth header
-      headers['Authorization'] = hmac_build_header(client_id, myheaders, headers_signature)
+      # headers['Authorization'] = hmac_build_header(client_id, myheaders, headers_signature)
+      headers['test'] = "testing123"
 
       # That's OK
       return headers
