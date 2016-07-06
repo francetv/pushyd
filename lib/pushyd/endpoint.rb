@@ -24,12 +24,11 @@ module PushyDaemon
     def init_logger logconf
       # Check structure conformity or set it to an empty hash
       logconf = {} unless logconf.is_a? Hash
-
-      # Extract context
-      logconf ||= {}
-      logfile   = logconf[:file]
       loglevel  = logconf[:level]
       me        = self.class.name
+
+      # Compute logfile
+      logfile = logfile(logconf, :file)
 
       # Prepare logger (may be NIL > won't output anything)
       @logger = Logger.new(logfile, LOG_ROTATION)
