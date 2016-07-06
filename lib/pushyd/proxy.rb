@@ -109,7 +109,6 @@ module PushyDaemon
 
       # Send request
       log_info "propagate: #{relay_url}", request.headers
-
       response = request.execute
 
       # Handle exceptions
@@ -123,6 +122,8 @@ module PushyDaemon
         log_error "propagate: connection refused: #{e.message}"
       rescue StandardError => e
         log_error "propagate: unknown: #{e.message}, #{e.inspect}", e.backtrace
+      else
+        log_info "propagate: #{response.body}"
     end
 
     def parse payload, content_type #, fields = []
