@@ -2,8 +2,8 @@
 amqp: amqp://guest:guest@localhost:5672/
 logs:
   path: '/tmp/'
-  file: null
-  newrelic: null
+  file: pushyd.log
+  newrelic: newrelic.log
   level: debug
 
 shout:
