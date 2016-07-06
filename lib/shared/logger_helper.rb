@@ -2,6 +2,35 @@ require "logger"
 
 module Shared
   module LoggerHelper
+    CONFIG_PATH = :path
+
+    def logfile config, pipe
+      # Disabled if no valid config
+      return nil unless config.is_a?(Hash)
+
+      # Compute logfile and check if we can write there
+      logfile = File.expand_path(config[pipe].to_s, config[CONFIG_PATH].to_s)
+
+      # Check that we'll be able to create logfiles
+      if File.exists?(logfile)
+        # File is there, is it writable ?
+        unless File.writable?(logfile)
+          puts "LoggerHelper [#{pipe}] disabled: file not writable [#{logfile}]"
+          return nil
+        end
+      else
+        # No file here, can we create it ?
+        logdir = File.dirname(logfile)
+        unless File.writable?(logdir)
+          puts "LoggerHelper [#{pipe}] disabled: directory not writable [#{logdir}]"
+          return nil
+        end
+      end
+
+      # OK, return a clean file path
+      puts "LoggerHelper [#{pipe}] logging to [#{logfile}]"
+      return logfile
+    end
 
   protected
 
@@ -39,12 +68,6 @@ module Shared
 
     def build_messages severity, message, details = nil
       messages = []
-      # messages << "/---------------------------------------"
-      # messages << "severity: #{severity}"
-      # messages << "message: #{message.class}"
-      # messages << "details: #{details.class} #{details.inspect}"
-      # messages << "ARRAY(#{details.count})" if details.is_a? Array
-      # messages << "HASH(#{details.count})" if details.is_a? Hash
 
       prefix = build_prefix
 
@@ -65,14 +88,6 @@ module Shared
       # messages << "\\---------------------------------------"
       logger.add severity, messages
     end
-
-    # def debug_lines lines, prefix = ''
-    #   if lines.is_a? Array
-    #     logger.debug lines.map{ |line| sprintf(LOG_MESSAGE_ARRAY, prefix, line) }
-    #   elsif lines.is_a? Hash
-    #     logger.debug lines.map{ |key, value| sprintf(LOG_MESSAGE_HASH, prefix, key, value) }
-    #   end
-    # end
 
   end
 end
