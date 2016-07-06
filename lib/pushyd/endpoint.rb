@@ -75,7 +75,8 @@ module PushyDaemon
     def connect_channel busconf
       fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless busconf
       info "connecting to #{busconf}"
-      conn = Bunny.new url: busconf.to_s, logger: @logger, heartbeat: :server
+      conn = Bunny.new busconf.to_s
+      #, logger: @logger, heartbeat: :server
       conn.start
 
       # Create channel
