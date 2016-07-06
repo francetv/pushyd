@@ -74,16 +74,9 @@ module PushyDaemon
 
     # Start connexion to RabbitMQ
     def connect_channel busconf
-      fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless (busconf.is_a? Hash) &&
-        busconf[:host] && busconf[:port]
-
-      info "connecting to #{busconf[:host]} port #{busconf[:port]}"
-      conn = Bunny.new host: busconf[:host].to_s,
-        port: busconf[:port].to_i,
-        user: busconf[:user].to_s,
-        pass: busconf[:pass].to_s,
-        heartbeat: :server,
-        logger: @logger
+      fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless busconf
+      info "connecting to #{busconf}"
+      conn = Bunny.new url: busconf.to_s, logger: @logger, heartbeat: :server
       conn.start
 
       # Create channel

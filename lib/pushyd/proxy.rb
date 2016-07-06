@@ -19,7 +19,7 @@ module PushyDaemon
       @table.align_column(5, :right)
 
       # Start connexion to RabbitMQ and create channel
-      @channel = connect_channel Conf.bus
+      @channel = connect_channel Conf.amqp
       log_info "channel connected"
 
       # Check config

@@ -1,10 +1,5 @@
 # common defaults
-bus:
-  host: localhost
-  port: 5672
-  user: guest
-  pass: guest
-
+amqp: amqp://guest:guest@localhost:5672/
 logs:
   path: '/tmp/'
   file: null
