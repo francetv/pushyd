@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pushyd (0.9.1)
+    pushyd (0.9.2)
       api-auth
       bunny (~> 2.3)
       chamber (~> 2.9)
