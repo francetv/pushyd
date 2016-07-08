@@ -75,12 +75,18 @@ module PushyDaemon
     def connect_channel busconf
       fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless busconf
       info "connecting to #{busconf}"
-      conn = Bunny.new busconf.to_s
-      #, logger: @logger, heartbeat: :server
+      conn = Bunny.new busconf.to_s,
+        logger: @logger,
+        # heartbeat: :server,
+        automatically_recover: true,
+        network_recovery_interval: AMQP_RECOVERY_INTERVAL,
+        heartbeat_interval: AMQP_HEARTBEAT_INTERVAL
       conn.start
 
-      # Create channel
+
+      # Create channel, prefetch only one message at a time
       channel = conn.create_channel
+      channel.prefetch(AMQP_PREFETCH)
 
     rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
       fail PushyDaemon::EndpointConnectionError, "error connecting (#{e.class})"

@@ -20,4 +20,7 @@ LOG_MESSAGE_HASH        = "%s     %-20s %s\n"
 # Constants: logger app-specific prefix
 LOG_PREFIX_FORMAT       = nil
 
-
+# Constants: AMQP protocol
+AMQP_HEARTBEAT_INTERVAL = 30
+AMQP_RECOVERY_INTERVAL  = 5
+AMQP_PREFETCH           = 1
