@@ -49,7 +49,7 @@ module PushyDaemon
       return unless msg_headers['sent_at']
 
       # Extract sent_at header
-      sent_at = Time.iso8601(msg_headers['sent_at'])
+      sent_at = Time.iso8601(msg_headers['sent_at']) rescue nil
       # log_info "sent_at     : #{sent_at.to_f}"
       # log_info "timenow     : #{Time.now.to_f}"
 
