@@ -44,9 +44,21 @@ module PushyDaemon
 
       # Prepare exchange
       loop do
+        # Generate key and fake id
+        if @keys.is_a?(Array) && @keys.any?
+          random_key = @keys.sample
+        else
+          random_key = "random"
+        end
+        # random_key = @keys.class
         random_string = SecureRandom.hex
-        random_key = @keys.sample || "random"
-        channel_shout [:ping, random_key, random_string], {dummy: true, time: Time.now.to_f, host: Conf.host}
+
+        # Generate payload
+        #payload = {time: Time.now.to_f, host: Conf.host}
+        payload = nil
+
+        # Shout it !
+        channel_shout [:ping, random_key, random_string], payload
         sleep @period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
@@ -67,7 +79,8 @@ module PushyDaemon
     def channel_shout keys, body = {}
       # Prepare exchange_name and routing_key
       exchange_name = @exchange.name
-      routing_key = keys.unshift(exchange_name).join('.')
+      keys.unshift(exchange_name)
+      routing_key = keys.join('.')
 
       # Announce shout
       log_message MSG_SEND, exchange_name, routing_key, body
