@@ -152,7 +152,7 @@ module PushyDaemon
       # Parse payload if content-type provided
       case content_type
         when "application/json"
-          return JSON.parse utf8payload
+          return JSON.parse utf8payload rescue nil
         when "text/plain"
           return utf8payload.to_s
         else
