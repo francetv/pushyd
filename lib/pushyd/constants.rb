@@ -26,4 +26,4 @@ LOG_PREFIX_FORMAT       = nil
 # Constants: AMQP protocol
 AMQP_HEARTBEAT_INTERVAL = 30
 AMQP_RECOVERY_INTERVAL  = 5
-AMQP_PREFETCH           = 1
+AMQP_PREFETCH           = 2
