@@ -9,14 +9,14 @@ logs:
 shout:
   topic: pushyd
   period: 10
-  # keys:
-  #   - tic
-  #   - tac
-  #   - toe
-  #   - created
-  #   - updated
-  #   - deleted
-  #   - crunched
+  keys:
+    - tic
+    - tac
+    - toe
+    - created
+    - updated
+    - deleted
+    - crunched
 
 # newrelic:
 #   licence: ""
