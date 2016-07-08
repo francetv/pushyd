@@ -65,18 +65,18 @@ module PushyDaemon
   private
 
     def channel_shout keys, body = {}
-      # Prepare headers
-      headers = {
-        sent_at: DateTime.now.iso8601,
-        sent_by: Conf.app_name,
-        }
-
       # Prepare exchange_name and routing_key
       exchange_name = @exchange.name
       routing_key = keys.unshift(exchange_name).join('.')
 
       # Announce shout
       log_message MSG_SEND, exchange_name, routing_key, body
+
+      # Prepare headers
+      headers = {
+        sent_at: DateTime.now.iso8601(SHOUTER_SENTAT_DECIMALS),
+        sent_by: Conf.app_name,
+        }
 
       # Publish
       @exchange.publish(body.to_json,

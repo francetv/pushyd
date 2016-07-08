@@ -7,6 +7,9 @@ WAY_PROP                = "PROP"
 PROXY_MESSAGE_MAX       = 1
 PROXY_USE_ACK           = false
 
+# Constants: shouter
+SHOUTER_SENTAT_DECIMALS = 6
+
 # Constants: logger
 LOG_ROTATION            = "daily"
 
