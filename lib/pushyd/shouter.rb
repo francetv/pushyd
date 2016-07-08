@@ -27,7 +27,7 @@ module PushyDaemon
       @period = config_shout[:period] || 0
 
       # Start connexion to RabbitMQ and create channel
-      @channel = connect_channel Conf.amqp
+      @channel = connect_channel Conf[:broker]
       log_info "channel connected"
 
       # Create exchange
