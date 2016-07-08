@@ -74,7 +74,12 @@ module PushyDaemon
     # Start connexion to RabbitMQ
     def connect_channel busconf
       fail PushyDaemon::EndpointConnexionContext, "invalid bus host/port" unless busconf
-      info "connecting to #{busconf}"
+      info "connecting to bus", {
+        broker: busconf,
+        recover: AMQP_RECOVERY_INTERVAL,
+        heartbeat: AMQP_HEARTBEAT_INTERVAL,
+        prefetch: AMQP_PREFETCH
+        }
       conn = Bunny.new busconf.to_s,
         logger: @logger,
         # heartbeat: :server,
@@ -82,7 +87,6 @@ module PushyDaemon
         network_recovery_interval: AMQP_RECOVERY_INTERVAL,
         heartbeat_interval: AMQP_HEARTBEAT_INTERVAL
       conn.start
-
 
       # Create channel, prefetch only one message at a time
       channel = conn.create_channel
