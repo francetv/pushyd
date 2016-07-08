@@ -45,6 +45,19 @@ module PushyDaemon
 
   private
 
+    def extract_delay msg_headers
+      return unless msg_headers['sent_at']
+
+      # Extract sent_at header
+      sent_at = Time.iso8601(msg_headers['sent_at'])
+      # log_info "sent_at     : #{sent_at.to_f}"
+      # log_info "timenow     : #{Time.now.to_f}"
+
+      # Compute delay
+      return ((Time.now - sent_at)*1000).round(2)
+    end
+
+
     # Handle the reception of a message on a queue
     def handle_message rule, delivery_info, metadata, payload
       # Prepare data
@@ -53,14 +66,20 @@ module PushyDaemon
       msg_rkey = delivery_info.routing_key.force_encoding('UTF-8')
       msg_headers = metadata.headers || {}
 
-      # Extract fields
-      data = parse payload, metadata.content_type  #, rule
+      # Compute delay and size
+      delay = extract_delay(msg_headers)
+      size = format_bytes(payload.bytesize, "B")
+
+      # Extract payload
+      data = parse payload, metadata.content_type
 
       # Announce match
       log_message MSG_RECV, msg_exchange, msg_rkey, data, {
-        'rule' => rule_name,
+        'matched rule' => rule_name,
         'app-id' => metadata.app_id,
         'content-type' => metadata.content_type,
+        'delay (ms)' => delay,
+        'body size' => size,
         }
 
       # Build notification payload

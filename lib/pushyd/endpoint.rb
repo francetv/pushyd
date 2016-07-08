@@ -155,6 +155,17 @@ module PushyDaemon
       rand(36**len).to_s(36)
     end
 
+    def format_bytes number, unit="", decimals = 0
+      return "&Oslash;" if number.nil? || number.to_f.zero?
+
+      units = ["", "k", "M", "G", "T", "P" ]
+      index = ( Math.log(number) / Math.log(2) ).to_i / 10
+      converted = number.to_f / (1024 ** index)
+
+      truncated = converted.round(decimals)
+      return "#{truncated} #{units[index]}#{unit}"
+    end
+
   private
 
   end
