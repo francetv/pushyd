@@ -8,7 +8,7 @@ module PushyDaemon
   class EndpointSubscribeError      < StandardError; end
 
   class Endpoint
-    include Shared::LoggerHelper
+    include BmcDaemonLib::LoggerHelper
     attr_reader :logger
 
     def initialize
