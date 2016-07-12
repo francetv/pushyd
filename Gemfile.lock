@@ -3,7 +3,7 @@ PATH
   specs:
     pushyd (0.9.2)
       api-auth
-      bmc-daemon-lib (~> 0.1.1)
+      bmc-daemon-lib (~> 0.1)
       bunny (~> 2.3)
       daemons
       json
