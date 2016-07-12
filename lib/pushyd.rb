@@ -1,5 +1,6 @@
 # Global libs
 require "rubygems"
+require 'bmc-daemon-lib'
 require "yaml"
 require "json"
 #require "thread"
@@ -11,7 +12,6 @@ require "newrelic_rpm"
 require_relative "shared/logger_formatter"
 require_relative "shared/logger_helper"
 require_relative "shared/hmac_signature"
-require_relative "shared/conf"
 
 # Project libs
 require_relative "pushyd/constants"

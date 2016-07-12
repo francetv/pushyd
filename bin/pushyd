@@ -5,11 +5,11 @@ begin
   require "rubygems"
   require "optparse"
   require 'daemons'
-  require_relative "../lib/shared/conf"
+  require 'bmc-daemon-lib'
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
-include Shared
+include BmcDaemonLib
 
 
 # Handle configuration
