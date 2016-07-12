@@ -32,7 +32,7 @@ module PushyDaemon
 
       # Prepare logger (may be NIL > won't output anything)
       @logger = Logger.new(logfile, LOG_ROTATION)
-      @logger.formatter = Shared::LoggerFormatter
+      @logger.formatter = BmcDaemonLib::LoggerFormatter
 
       # Set progname
       @logger.progname = me.split('::').last

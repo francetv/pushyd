@@ -3,9 +3,9 @@
 # Try to load external libs, helpers and constants
 begin
   require "rubygems"
+  require 'bmc-daemon-lib'
   require "optparse"
   require 'daemons'
-  require 'bmc-daemon-lib'
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
