@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
   # spec.add_development_dependency "pry"
 
   # Runtime dependencies
+  spec.add_runtime_dependency       "bmc-daemon-lib", "~> 0.1.1"
   spec.add_runtime_dependency       "daemons"
-  spec.add_runtime_dependency       "chamber", "~> 2.9"
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny", "~> 2.3"
   spec.add_runtime_dependency       "rest-client", "~> 1.8"
