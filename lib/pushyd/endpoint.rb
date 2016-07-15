@@ -13,49 +13,13 @@ module PushyDaemon
 
     def initialize
       # Prepare logger
-      init_logger Conf[:logs]
+      @logger = BmcDaemonLib::LoggerPool.instance.get :file
 
       # Done
       log_info "endpoint initialized"
     end
 
   protected
-
-    def init_logger logconf
-      # Check structure conformity or set it to an empty hash
-      logconf = {} unless logconf.is_a? Hash
-      loglevel  = logconf[:level]
-      me        = self.class.name
-
-      # Compute logfile
-      logfile = logfile(logconf, :file)
-
-      # Prepare logger (may be NIL > won't output anything)
-      @logger = Logger.new(logfile, LOG_ROTATION)
-      @logger.formatter = BmcDaemonLib::LoggerFormatter
-
-      # Set progname
-      @logger.progname = me.split('::').last
-
-      # Set expected level
-      @logger.level = case loglevel
-      when "debug"
-        Logger::DEBUG
-      when "info"
-        Logger::INFO
-      when "warn"
-        Logger::WARN
-      else
-        Logger::INFO
-      end
-
-      # Announce on STDOUT we're now logging to file
-      if logfile
-        puts "#{self.class} logging loglevel [#{loglevel} > #{@logger.level}] to [#{logfile}]"
-      else
-        puts "#{self.class} logging disabled"
-      end
-    end
 
     def log_message msg_way, msg_exchange, msg_key, msg_body = [], msg_attrs = {}
       # Message header
