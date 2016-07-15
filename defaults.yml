@@ -19,7 +19,7 @@ shout:
     - crunched
 
 # newrelic:
-#   licence: ""
+#   license: ""
 #   platform: "bigbusiness"               # app platform name
 #   app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 #   logfile: null
