@@ -6,6 +6,7 @@ module PushyDaemon
   class EndpointTopicContext       < StandardError; end
 
   class Shouter < Endpoint
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     # Class options
     attr_accessor :table
@@ -103,7 +104,6 @@ module PushyDaemon
 
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :channel_shout,  category: :task
       add_transaction_tracer :shout,          category: :task
     end

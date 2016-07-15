@@ -5,6 +5,7 @@ require 'terminal-table'
 module PushyDaemon
   class Proxy < Endpoint
     include Shared::HmacSignature
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     # Class options
     attr_accessor :table
@@ -168,7 +169,6 @@ module PushyDaemon
 
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :handle_message, category: :task
       add_transaction_tracer :propagate,      category: :task
     end
