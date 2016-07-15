@@ -6,6 +6,7 @@ module PushyDaemon
   class Proxy < Endpoint
     include Shared::HmacSignature
 
+    # Class options
     attr_accessor :table
 
     def initialize
@@ -174,4 +175,3 @@ module PushyDaemon
 
   end
 end
-

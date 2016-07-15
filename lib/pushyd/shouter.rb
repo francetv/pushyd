@@ -7,6 +7,7 @@ module PushyDaemon
 
   class Shouter < Endpoint
 
+    # Class options
     attr_accessor :table
 
     def initialize

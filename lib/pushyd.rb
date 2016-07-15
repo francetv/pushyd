@@ -3,10 +3,7 @@ require "rubygems"
 require 'bmc-daemon-lib'
 require "yaml"
 require "json"
-#require "thread"
-#require "singleton"
 require "newrelic_rpm"
-
 
 # Shared libs
 require_relative "shared/hmac_signature"

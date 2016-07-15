@@ -2,6 +2,7 @@ require 'bunny'
 require "securerandom"
 
 module PushyDaemon
+  # Class exceptions
   class EndpointConnexionContext    < StandardError; end
   class EndpointConnectionError     < StandardError; end
   class EndpointSubscribeContext    < StandardError; end
