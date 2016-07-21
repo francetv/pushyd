@@ -3,7 +3,7 @@ PATH
   specs:
     pushyd (0.9.2)
       api-auth
-      bmc-daemon-lib (~> 0.1)
+      bmc-daemon-lib (~> 0.2)
       bunny (~> 2.3)
       daemons
       json
@@ -18,10 +18,9 @@ GEM
     amq-protocol (2.0.1)
     api-auth (2.0.0)
     ast (2.3.0)
-    bmc-daemon-lib (0.1.2)
+    bmc-daemon-lib (0.2.0)
       chamber (~> 2.9)
-      newrelic_rpm
-    bunny (2.4.0)
+    bunny (2.5.0)
       amq-protocol (>= 2.0.1)
     chamber (2.9.0)
       hashie (~> 3.3)
