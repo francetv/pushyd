@@ -168,10 +168,8 @@ module PushyDaemon
     end
 
     # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      add_transaction_tracer :handle_message, category: :task
-      add_transaction_tracer :propagate,      category: :task
-    end
+    add_transaction_tracer :handle_message, category: :task
+    add_transaction_tracer :propagate,      category: :task
 
   end
 end
