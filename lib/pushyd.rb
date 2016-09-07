@@ -4,6 +4,8 @@ require 'bmc-daemon-lib'
 require "yaml"
 require "json"
 require "newrelic_rpm"
+require "rollbar"
+
 
 # Shared libs
 require_relative "shared/hmac_signature"

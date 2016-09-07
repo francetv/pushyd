@@ -57,6 +57,7 @@ puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
 puts "Process name    \t #{Conf.generate(:process_name)}"
 puts
 puts Conf.dump
+puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
 
 # Run daemon
 run_options = {

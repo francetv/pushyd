@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency       "api-auth"
   spec.add_runtime_dependency       "terminal-table"
   spec.add_runtime_dependency       "newrelic_rpm"
+  spec.add_runtime_dependency       "rollbar"
 end

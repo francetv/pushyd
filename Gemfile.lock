@@ -9,6 +9,7 @@ PATH
       json
       newrelic_rpm
       rest-client (~> 1.8)
+      rollbar
       terminal-table
 
 GEM
@@ -52,6 +53,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
+    rollbar (2.12.0)
+      multi_json
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
