@@ -17,6 +17,7 @@ begin
   # Defaults
   cmd_config = nil
   cmd_logfile = nil
+  cmd_dump = nil
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
@@ -29,6 +30,7 @@ begin
     opts.on("-c", "--config CONFIGFILE")     { |path| cmd_config = File.expand_path(path.to_s)}
     opts.on("-e", "--environment ENV")       { |env| Conf.app_env = env }
     opts.on("",   "--dev")                   { Conf.app_env = "development" }
+    opts.on("",   "--dump", "Dump config as seen by the process")   { |value| cmd_dump = true }
   end
   parser.order!(ARGV)
 
@@ -55,9 +57,11 @@ puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
 puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
 puts "Process name    \t #{Conf.generate(:process_name)}"
-puts
-puts Conf.dump
 puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
+if cmd_dump
+  puts
+  puts Conf.dump
+end
 
 # Run daemon
 run_options = {
