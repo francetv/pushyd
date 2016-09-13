@@ -15,9 +15,9 @@ module PushyDaemon
 
     def initialize(conn, config_shout)
       # Init
-      super
-      @keys = []
+      @shouter_keys = []
       @channel = nil
+      @exchange = nil
 
       # Prepare logger
       @logger = BmcDaemonLib::LoggerPool.instance.get :shouter
@@ -29,44 +29,31 @@ module PushyDaemon
       end
 
       # Extract information
-      @keys = config_shout[:keys] if config_shout[:keys].is_a? Array
-      @topic = config_shout[:topic]
-      @period = config_shout[:period] || 0
+      @shouter_keys = config_shout[:keys] if config_shout[:keys].is_a? Array
+      @shouter_topic = config_shout[:topic]
+      @shouter_period = config_shout[:period].to_i
+      @shouter_period = 1 unless (@shouter_period > 0)
 
-      # Start connexion to RabbitMQ and create channel
-      @channel = connect_channel Conf[:broker]
-      log_info "channel connected"
+      fail PushyDaemon::EndpointTopicContext unless @shouter_topic
 
-      # Create exchange
-      fail PushyDaemon::EndpointTopicContext unless @topic
-      @exchange = @channel.topic(@topic, durable: true, persistent: true)
+      # Create channel and exchange
+      @channel = conn.create_channel
+      @exchange = @channel.topic(@shouter_topic, durable: true, persistent: true)
 
-      # Send shouter info to logs
-      shouter_info = { topic: @topic, period: @period, keys: @keys }
-      log_info "shouter initialized", shouter_info
+      # Start working, now
+      log_info "Shouter initialized, starting loop now", { topic: @shouter_topic, period: @shouter_period, keys: @shouter_keys }
     end
 
-    def shout
-      return unless @exchange
-
+    def start_loop
       # Prepare exchange
       loop do
-        # Generate key and fake id
-        if @keys.is_a?(Array) && @keys.any?
-          random_key = @keys.sample
-        else
-          random_key = "random"
-        end
-        # random_key = @keys.class
-        random_string = SecureRandom.hex
-
         # Generate payload
-        #payload = {time: Time.now.to_f, host: Conf.host}
-        payload = nil
+        payload = {time: Time.now.to_f, host: BmcDaemonLib::Conf.host}
+        # payload = nil
 
         # Shout it !
-        channel_shout [:ping, random_key, random_string], payload
-        sleep @period
+        exchange_shout @exchange, payload
+        sleep @shouter_period
       end
     rescue AMQ::Protocol::EmptyResponseError => e
       fail PushyDaemon::ShouterResponseError, "#{e.class} (#{e.inspect})"
@@ -81,35 +68,43 @@ module PushyDaemon
 
   protected
 
+    def log_prefix
+      [nil]
+      # [self.class.name.split('::').last, :shouter]
+    end
+
   private
 
-    def channel_shout keys, body = {}
-      # Prepare exchange_name and routing_key
-      exchange_name = @exchange.name
-      keys.unshift(exchange_name)
+    def exchange_shout exchange, body = {}
+      # Prepare routing_key
+      keys = []
+      keys << @shouter_topic
+      keys << SecureRandom.hex
+      keys << @shouter_keys.sample if (@shouter_keys.is_a?(Array) && @shouter_keys.any?)
       routing_key = keys.join('.')
 
       # Announce shout
-      log_message MSG_SEND, exchange_name, routing_key, body
+      log_message MSG_SEND, @shouter_topic, routing_key, body
 
       # Prepare headers
+      app_id = "#{BmcDaemonLib::Conf.app_name}/#{BmcDaemonLib::Conf.app_ver}"
       headers = {
         sent_at: DateTime.now.iso8601(SHOUTER_SENTAT_DECIMALS),
-        sent_by: Conf.app_name,
+        sent_by: app_id,
         }
 
       # Publish
-      @exchange.publish(body.to_json,
+      exchange.publish(body.to_json,
         routing_key: routing_key,
         headers: headers,
-        app_id: Conf.app_name,
+        app_id: app_id,
         content_type: "application/json",
         )
     end
 
     # NewRelic instrumentation
-    add_transaction_tracer :channel_shout,  category: :task
-    add_transaction_tracer :shout,          category: :task
+    #add_transaction_tracer :exchange_shout,  category: :task
+    # add_transaction_tracer :shout,           category: :task
 
   end
 end
