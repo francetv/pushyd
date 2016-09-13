@@ -45,6 +45,9 @@ module PushyDaemon
 
       # Handle errors and acknowledgments
       # log_debug "handle_message : channel[#{@channel.inspect}]"
+      rescue Exception => e
+        log_error "handle_message: EXCEPTION: #{e.message}, #{e.inspect}", e.backtrace
+        channel_ackit(message[:tag], false)
       rescue StandardError => e
         log_error "handle_message: unknown: #{e.message}, #{e.inspect}", e.backtrace
         channel_ackit(message[:tag], false)

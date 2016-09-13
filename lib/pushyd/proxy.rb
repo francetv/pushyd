@@ -36,6 +36,12 @@ module PushyDaemon
 
       # Send config table to logs
       log_info "Proxy initialized", @table.to_s.lines
+
+      rescue StandardError => e
+        puts "Proxy.initialize: exception: #{e.inspect}"
+        log_error "Proxy.initialize: exception: #{e.inspect}"
+        raise MqConsumerException, e.message
+
     end
 
   protected
