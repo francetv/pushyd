@@ -5,19 +5,24 @@ module PushyDaemon
   class ShouterInterrupted         < StandardError; end
   class EndpointTopicContext       < StandardError; end
 
-  class Shouter < Endpoint
+  class Shouter < BmcDaemonLib::MqEndpoint
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    include BmcDaemonLib::LoggerHelper
 
     # Class options
     attr_accessor :table
+    attr_accessor :logger
 
-    def initialize
+    def initialize(conn, config_shout)
       # Init
       super
       @keys = []
+      @channel = nil
+
+      # Prepare logger
+      @logger = BmcDaemonLib::LoggerPool.instance.get :shouter
 
       # Check config
-      config_shout = Conf[:shout]
       unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
         log_error "prepare: empty [shout] section"
         return

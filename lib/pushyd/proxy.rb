@@ -3,17 +3,17 @@ require 'rest_client'
 require 'terminal-table'
 
 module PushyDaemon
-  class Proxy < Endpoint
     include Shared::HmacSignature
-    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+  class Proxy < BmcDaemonLib::MqEndpoint
+    #include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     # Class options
     attr_accessor :table
 
     def initialize
       # Init
-      super
       @exchanges = {}
+      @shouters = []
 
       # Init ASCII table
       @table = Terminal::Table.new
@@ -21,9 +21,6 @@ module PushyDaemon
       @table.headings = ["rule", "topic", "route", "relay", "created queue", "description"]
       @table.align_column(5, :right)
 
-      # Start connexion to RabbitMQ and create channel
-      @channel = connect_channel Conf[:broker]
-      log_info "channel connected"
       # Prepare logger
       @logger = BmcDaemonLib::LoggerPool.instance.get
 
@@ -40,9 +37,15 @@ module PushyDaemon
           channel_subscribe rule
         end
       end
+      # Start connexion to RabbitMQ
+      @conn = connect_to BmcDaemonLib::Conf[:broker]
+      log_info "Proxy connected"
+
+      # Create a new shouter, and start its loop
+      create_shouter
 
       # Send config table to logs
-      log_info "proxy initialized", @table.to_s.lines
+      log_info "Proxy initialized", @table.to_s.lines
     end
 
   protected
@@ -51,14 +54,22 @@ module PushyDaemon
 
     def extract_delay msg_headers
       return unless msg_headers['sent_at']
+    def create_shouter
+      # Get config
+      config_shouter = BmcDaemonLib::Conf[:shout]
 
       # Extract sent_at header
       sent_at = Time.iso8601(msg_headers['sent_at']) rescue nil
       # log_info "sent_at     : #{sent_at.to_f}"
       # log_info "timenow     : #{Time.now.to_f}"
+      # Create the shouter
+      shouter = Shouter.new(@conn, config_shouter)
+      @shouters << shouter
 
       # Compute delay
       return ((Time.now - sent_at)*1000).round(2)
+      # Now make it loop
+      shouter.start_loop
     end
 
 
