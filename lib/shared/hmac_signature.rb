@@ -4,21 +4,33 @@ require 'base64'
 module Shared
   module HmacSignature
 
-    def headers_sign request, hmac_method, hmac_user, hmac_secret, names = ['date']
-      return unless hmac_user
-      unless hmac_secret && hmac_method
-        log_error "headers_sign: hmac: missing secret or method"
+    def headers_sign headers, config, names = ['date']
+      # Extract and check
+      return unless config.is_a? Hash
+      hmac_method = config[:method]
+      hmac_user   = config[:user]
+      hmac_secret = config[:secret]
+      #log_debug "headers_sign config", config
+
+      # Check params
+      unless config[:method] && config[:user] && config[:secret]
+        log_error "headers_sign: missing method/user/secret"
+        return
+      end
+
+      # Check params
+      unless config[:method] == 'hmac-kong'
+        log_error "headers_sign: only [hmac-kong] method is supported"
         return
       end
 
       # OK, lets go
-      log_info "headers_sign: before: user[#{hmac_user}] secret[#{hmac_secret}] method[#{hmac_method}]", request.headers
-      hmac_sign_kong request.headers, hmac_user, hmac_secret, names
-      log_info "headers_sign: after:", request.headers
+      hmac_sign_kong headers, config[:user], config[:secret], names
+      # log_info "headers_sign: after signing", headers
     end
 
-    def headers_md5 request
-      request.headers['Content-MD5'] = Digest::MD5.hexdigest(request.payload.to_s)
+    def headers_md5 headers, payload
+      headers['Content-MD5'] = Digest::MD5.hexdigest(payload.to_s)
     end
 
   private
@@ -33,17 +45,16 @@ module Shared
       myheaders = hmac_headers_filter headers, names
 
       # Signe string of headers
-      headers_signature = hmac_headers_hash myheaders, client_secret
-      log_debug "hmac_sign_kong #{myheaders.keys.inspect} #{headers_signature}"
+      signature = hmac_headers_hash myheaders, client_secret
+      log_debug "hmac_sign_kong signed [#{signature}] from headers #{myheaders.keys.inspect}"
 
       # Add auth header
-      # headers['Authorization'] = hmac_build_header(client_id, myheaders, headers_signature)
-      headers['test'] = "testing123"
+      headers['Authorization'] = hmac_build_header(client_id, myheaders, signature)
+      #headers['test'] = "testing123"
 
       # That's OK
       return headers
     end
-
 
     def hmac_build_header client_id, myheaders, signature
       sprintf 'hmac username="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
