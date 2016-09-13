@@ -4,13 +4,11 @@ broker: amqp://guest:guest@localhost:5672/%2F
 logs:
   path:     "/tmp/"
   level:    debug
-
-  default:  "pushyd-core.log"
-  consumer: "pushyd-core.log"
-  shouter:  "pushyd-core.log"
-
-  newrelic: "pushyd-newrelic.log"
-  rollbar:  "pushyd-rollbar.log"
+  default:  "pushyd-default.log"
+  shouter:  "pushyd-shouter.log"
+  consumer: "pushyd-consumer.log"
+  # newrelic: "pushyd-newrelic.log"
+  # rollbar:  "pushyd-rollbar.log"
 
 shout:
   topic: pushyd
