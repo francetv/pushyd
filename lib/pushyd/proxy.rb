@@ -24,6 +24,8 @@ module PushyDaemon
       # Start connexion to RabbitMQ and create channel
       @channel = connect_channel Conf[:broker]
       log_info "channel connected"
+      # Prepare logger
+      @logger = BmcDaemonLib::LoggerPool.instance.get
 
       # Check config
       config_rules = Conf[:rules]
