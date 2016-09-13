@@ -1,11 +1,16 @@
 # Constants: global
 MSG_SEND                = "SEND"
 MSG_RECV                = "RECV"
-WAY_PROP                = "PROP"
+MSG_RLAY                = "RLAY"
 
 # Constants: proxy
 PROXY_MESSAGE_MAX       = 1
 PROXY_USE_ACK           = false
+# Constants: AMQP protocol
+AMQP_HEARTBEAT_INTERVAL = 30
+AMQP_RECOVERY_INTERVAL  = 5
+AMQP_PREFETCH           = 3
+AMQP_MANUAL_ACK         = false
 
 # Constants: shouter
 SHOUTER_SENTAT_DECIMALS = 6
@@ -23,7 +28,3 @@ LOG_MESSAGE_HASH        = "%s     %-20s %s\n"
 # Constants: logger app-specific prefix
 LOG_PREFIX_FORMAT       = nil
 
-# Constants: AMQP protocol
-AMQP_HEARTBEAT_INTERVAL = 30
-AMQP_RECOVERY_INTERVAL  = 5
-AMQP_PREFETCH           = 2
