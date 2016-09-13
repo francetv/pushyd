@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pushyd (0.9.2)
+    pushyd (0.20.0)
       api-auth
       bmc-daemon-lib (~> 0.3.14)
       bunny (~> 2.3)
@@ -88,7 +88,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bmc-daemon-lib!
   bundler (~> 1.6)
   http (~> 2.0)
   pushyd!
