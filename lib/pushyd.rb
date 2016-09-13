@@ -12,8 +12,8 @@ require_relative "shared/hmac_signature"
 
 # Project libs
 require_relative "pushyd/constants"
-require_relative "pushyd/endpoint"
 require_relative "pushyd/proxy"
+require_relative "pushyd/consumer"
 require_relative "pushyd/shouter"
 require_relative "pushyd/daemon"
 

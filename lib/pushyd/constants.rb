@@ -3,9 +3,6 @@ MSG_SEND                = "SEND"
 MSG_RECV                = "RECV"
 MSG_RLAY                = "RLAY"
 
-# Constants: proxy
-PROXY_MESSAGE_MAX       = 1
-PROXY_USE_ACK           = false
 # Constants: AMQP protocol
 AMQP_HEARTBEAT_INTERVAL = 30
 AMQP_RECOVERY_INTERVAL  = 5
