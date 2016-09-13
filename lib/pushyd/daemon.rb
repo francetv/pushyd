@@ -2,20 +2,12 @@ module PushyDaemon
   class Daemon
 
     def self.run
-      # Create a new proxy
-      p = Proxy.new
-
-      # Dump config table
-      puts p.table.to_s
-
-      # Create a new shouter
-      s = Shouter.new
-
-      # Start shout loop
-      s.shout
+      # Create a new proxy, and dump its configuration
+      Proxy.new
 
       # Backup infinite loop in case shout does nothing
       loop do
+        sleep 1
       end
 
     rescue EndpointConnectionError, ShouterInterrupted => e
