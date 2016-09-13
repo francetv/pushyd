@@ -1,7 +1,7 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   # Project version
-  spec.version                      = "0.9.2"
+  spec.version                      = "0.9.4"
 
   # Project description
   spec.name                         = "pushyd"
@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   # spec.add_development_dependency "pry"
 
   # Runtime dependencies
-  spec.add_runtime_dependency       "bmc-daemon-lib", "~> 0.2"
+  spec.add_runtime_dependency       "bmc-daemon-lib", "~> 0.3.14"
   spec.add_runtime_dependency       "daemons"
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny", "~> 2.3"
