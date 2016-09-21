@@ -15,8 +15,8 @@ SHOUTER_SENTAT_DECIMALS = 6
 # Constants: logger
 LOGGER_FORMAT = {
   context: {
-    me: "me/%-15s",
-    rule: "rule/%-20s",
+    caller: "%-17s",
+    rule:   "%-20s",
     }
   # array:    "PA%s     %s",
   # hash:     "PH%s     %-20s %s",
