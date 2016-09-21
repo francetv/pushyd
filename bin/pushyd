@@ -75,11 +75,13 @@ monitor: false,
   }
 Daemons.run_proc(Conf.generate(:process_name), run_options) do
   # Load code
-  puts "--- load code"
   Conf.prepare_newrelic
+
+  # Load code
+  Conf.log :launcher, "load project code"
   require_relative "../lib/pushyd"
 
   # Start daemon
-  puts "--- start daemon"
+  Conf.log :launcher, "start daemon"
   PushyDaemon::Daemon.run
 end
