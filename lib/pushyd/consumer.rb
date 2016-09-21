@@ -31,8 +31,10 @@ module PushyDaemon
 
   protected
 
-    def log_prefix
-      [@rule_name]
+    def log_context
+      {
+        rule: @rule_name
+      }
     end
 
     # Handle the reception of a message on a queue

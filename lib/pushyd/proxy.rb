@@ -46,9 +46,11 @@ module PushyDaemon
 
   protected
 
-    def log_prefix
-      [nil]
-      # [self.class.name.split('::').last, :proxy]
+    def log_context
+      {
+        me: :proxy
+      }
+
     end
 
     def create_shouter
