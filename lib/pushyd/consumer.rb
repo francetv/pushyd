@@ -19,7 +19,7 @@ module PushyDaemon
       @rule_name = rule_name
 
       # Prepare logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :consumer
+      log_pipe :consumer
 
       # Create channel, prefetch only one message at a time
       @channel = @conn.create_channel

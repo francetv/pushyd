@@ -20,7 +20,7 @@ module PushyDaemon
       @exchange = nil
 
       # Prepare logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :shouter
+      log_pipe :shouter
 
       # Check config
       unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
