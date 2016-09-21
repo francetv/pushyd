@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pushyd (0.20.1)
+    pushyd (0.21.0)
       api-auth
       bmc-daemon-lib (~> 0.4.3)
       bunny (~> 2.3)
