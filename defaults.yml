@@ -7,8 +7,8 @@ logs:
   default:  "pushyd-default.log"
   shouter:  "pushyd-shouter.log"
   consumer: "pushyd-consumer.log"
-  # newrelic: "pushyd-newrelic.log"
-  # rollbar:  "pushyd-rollbar.log"
+  newrelic: "pushyd-newrelic.log"
+  rollbar:  "pushyd-rollbar.log"
 
 shout:
   topic: pushyd
@@ -22,11 +22,13 @@ shout:
     - deleted
     - crunched
 
-# newrelic:
-#   license: ""
-#   platform: "bigbusiness"               # app platform name
-#   app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
-#   logfile: null
+newrelic:
+  enabled: true
+  disabled: false
+
+rollbar:
+  enabled: true
+  disabled: false
 
 # rules:
 #   proxy_tests:
