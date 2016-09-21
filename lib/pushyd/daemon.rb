@@ -10,7 +10,7 @@ module PushyDaemon
         sleep 1
       end
 
-    rescue EndpointConnectionError, ShouterInterrupted => e
+    rescue BmcDaemonLib::MqConsumerException, EndpointConnectionError, ShouterInterrupted => e
       abort "EXITING #{e.class}: #{e.message}"
     rescue Errno::EACCES, StandardError => e
       abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
