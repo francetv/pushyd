@@ -68,12 +68,11 @@ module PushyDaemon
     def create_consumers
       # Get config
       config_rules = BmcDaemonLib::Conf[:rules]
-      log_info "create_consumers: #{config_rules.keys.join(', ')}"
-
       if config_rules.nil? || !config_rules.is_a?(Hash)
-        log_error "prepare: no rules"
+        log_error "create_consumers: no rules"
         return
       end
+      log_info "create_consumers: #{config_rules.keys.join(', ')}"
 
       # Subscribe for each and every rule/route
       config_rules.each do |name, rule|
@@ -109,6 +108,11 @@ module PushyDaemon
 
       # Return it
       @consumers << consumer
+    end
+
+
+    def consumer_cancelled all={}
+      log_error "consumer_cancelled remotely: #{all.inspect}"
     end
 
   end
