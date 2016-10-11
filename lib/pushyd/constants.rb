@@ -6,7 +6,7 @@ MSG_RLAY                = "RLAY"
 # Constants: AMQP protocol
 AMQP_HEARTBEAT_INTERVAL = 30
 AMQP_RECOVERY_INTERVAL  = 5
-AMQP_PREFETCH           = 3
+AMQP_PREFETCH           = 5
 AMQP_MANUAL_ACK         = false
 
 # Constants: shouter
@@ -17,9 +17,9 @@ LOGGER_FORMAT = {
   context: {
     caller: "%-17s",
     rule:   "%-20s",
-    }
-  # array:    "PA%s     %s",
-  # hash:     "PH%s     %-20s %s",
+    },
+  array:    "     - %s",
+  hash:     "     = %-20s %s",
   }
 
 
