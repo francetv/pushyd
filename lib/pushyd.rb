@@ -15,7 +15,6 @@ require_relative "pushyd/constants"
 require_relative "pushyd/proxy"
 require_relative "pushyd/consumer"
 require_relative "pushyd/shouter"
-require_relative "pushyd/daemon"
 
 # Init
 require_relative "pushyd/initialize"

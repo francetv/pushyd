@@ -37,9 +37,14 @@ module PushyDaemon
       # Send config table to logs
       log_info "Proxy initialized", @table.to_s.lines
 
+      rescue BmcDaemonLib::MqConsumerException, EndpointConnectionError, ShouterInterrupted, Errno::EACCES => e
+        log_error "Proxy: #{e.message}"
+        abort "EXITING #{e.class}: #{e.message}"
+
       rescue StandardError => e
-        puts "Proxy.initialize: exception: #{e.inspect}"
-        log_error "Proxy.initialize: exception: #{e.inspect}"
+        log_error "Proxy: #{e.message}", e.backtrace
+        abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
+
         raise MqConsumerException, e.message
 
     end

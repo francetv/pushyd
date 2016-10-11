@@ -83,5 +83,12 @@ Daemons.run_proc(Conf.generate(:process_name), run_options) do
 
   # Start daemon
   Conf.log :launcher, "start daemon"
-  PushyDaemon::Daemon.run
+
+  # Start the proxy
+  PushyDaemon::Proxy.new
+
+  # Backup infinite loop in case shout does nothing
+  loop do
+    sleep 1
+  end
 end
