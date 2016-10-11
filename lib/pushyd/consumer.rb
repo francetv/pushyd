@@ -95,7 +95,7 @@ module PushyDaemon
 
       # Compute: payload MD5, HMAC signature
       headers_md5 headers, request_body
-      headers_sign headers, @rule[:sign], [:date]
+      headers_sign headers, @rule[:sign]
 
       # Build final request
       request = RestClient::Request.new url: relay_url,
