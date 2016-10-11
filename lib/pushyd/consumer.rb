@@ -65,7 +65,7 @@ module PushyDaemon
 
       # Check if we need to relay anything
       unless @rule[:relay]
-        log_debug "handle_relay: no [relay] URL"
+        # log_debug "handle_relay: no [relay] URL"
         return
       end
 
@@ -109,7 +109,7 @@ module PushyDaemon
 
       # Handle exceptions
       rescue RestClient::ExceptionWithResponse, URI::InvalidURIError, RestClient::InternalServerError => e
-        log_error "#{request_prefix} rest-client exception: #{e.message}"
+        log_error "#{request_prefix} rest-client: #{e.message}"
       rescue ApiAuth::ApiAuthError, ApiAuth::UnknownHTTPRequest => e
         log_error "#{request_prefix} api-auth: #{e.message}"
       rescue Errno::ECONNREFUSED => e
