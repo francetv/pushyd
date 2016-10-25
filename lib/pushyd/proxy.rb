@@ -31,11 +31,13 @@ module PushyDaemon
       # Check config and subscribe rules
       create_consumers
 
+      # Send config table to logs
+      log_info "Proxy initialized", @table.to_s
+      puts @table.to_s
+
+
       # Create a new shouter, and start its loop
       create_shouter
-
-      # Send config table to logs
-      log_info "Proxy initialized", @table.to_s.lines
 
       rescue BmcDaemonLib::MqConsumerException, EndpointConnectionError, ShouterInterrupted, Errno::EACCES => e
         log_error "Proxy: #{e.message}"
@@ -114,7 +116,6 @@ module PushyDaemon
       # Return it
       @consumers << consumer
     end
-
 
     def consumer_cancelled all={}
       log_error "consumer_cancelled remotely: #{all.inspect}"
