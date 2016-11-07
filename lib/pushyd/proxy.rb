@@ -50,7 +50,7 @@ module PushyDaemon
         log_error "Proxy: #{e.message}", e.backtrace
         abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
 
-        raise MqConsumerException, e.message
+        # raise MqConsumerException, e.message
 
     end
 
@@ -101,13 +101,18 @@ module PushyDaemon
       # Build a new consumer
       consumer = Consumer.new(@conn, rule_name, rule)
 
-      # Create its own queue
+      # Subscribe to my own queue
       consumer.subscribe_to_queue rule_queue, "rule:#{rule_name}"
 
       # Bind each route to exchange
       rule_routes.each do |route|
-        consumer.listen_to rule_topic, route
+        begin
           status = "> #{rule_queue}"
+          consumer.listen_to rule_topic, route
+        rescue BmcDaemonLib::MqConsumerTopicNotFound => e
+          status = "! BIND FAILED"
+          log_error "Proxy consumer: #{e.message}"
+        end
 
         # Add row to config table
         @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s, status ]
