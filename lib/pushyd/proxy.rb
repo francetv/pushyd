@@ -17,8 +17,8 @@ module PushyDaemon
 
       # Init ASCII table
       @table = Terminal::Table.new
-      @table.title = "Propagation rules"
-      @table.headings = ["rule", "topic", "route", "relay", "created queue", "description"]
+      @table.title = "Rules summary"
+      @table.headings = ["rule", "topic", "route", "relay", "description", "status"]
       @table.align_column(5, :right)
 
       # Prepare logger
@@ -107,9 +107,10 @@ module PushyDaemon
       # Bind each route to exchange
       rule_routes.each do |route|
         consumer.listen_to rule_topic, route
+          status = "> #{rule_queue}"
 
         # Add row to config table
-        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule_queue, rule[:title].to_s ]
+        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s, status ]
       end
 
       # Return it
