@@ -41,15 +41,17 @@ module PushyDaemon
       # Make the shouter loop!
       @shouter.start_loop
 
+      rescue BmcDaemonLib::MqConsumerException => e
+        log_error "Proxy consumer: #{e.message}"
+        abort "EXITING #{e.class}: #{e.message}"
 
-      rescue BmcDaemonLib::MqConsumerException, EndpointConnectionError, ShouterInterrupted, Errno::EACCES => e
-        log_error "Proxy: #{e.message}"
+      rescue ShouterInterrupted, EndpointConnectionError, Errno::EACCES => e
+        log_error "Proxy error: #{e.message}"
         abort "EXITING #{e.class}: #{e.message}"
 
       rescue StandardError => e
-        log_error "Proxy: #{e.message}", e.backtrace
+        log_error "Proxy unexpected: #{e.message}", e.backtrace
         abort "EXITING #{e.class}: #{e.message} \n #{e.backtrace.to_yaml}"
-
         # raise MqConsumerException, e.message
 
     end
