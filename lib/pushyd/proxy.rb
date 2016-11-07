@@ -12,7 +12,7 @@ module PushyDaemon
 
     def initialize
       # Init
-      @shouters = []
+      @shouter = nil
       @consumers = []
 
       # Init ASCII table
@@ -28,6 +28,9 @@ module PushyDaemon
       @conn = connect_to BmcDaemonLib::Conf[:broker]
       log_info "Proxy connected"
 
+      # Create a new shouter
+      @shouter = create_shouter
+
       # Check config and subscribe rules
       create_consumers
 
@@ -35,9 +38,9 @@ module PushyDaemon
       log_info "Proxy initialized", @table.to_s
       puts @table.to_s
 
+      # Make the shouter loop!
+      @shouter.start_loop
 
-      # Create a new shouter, and start its loop
-      create_shouter
 
       rescue BmcDaemonLib::MqConsumerException, EndpointConnectionError, ShouterInterrupted, Errno::EACCES => e
         log_error "Proxy: #{e.message}"
@@ -65,11 +68,7 @@ module PushyDaemon
       config_shouter = BmcDaemonLib::Conf[:shout]
 
       # Create the shouter
-      shouter = Shouter.new(@conn, config_shouter)
-      @shouters << shouter
-
-      # Now make it loop
-      shouter.start_loop
+      Shouter.new(@conn, config_shouter)
     end
 
     def create_consumers
