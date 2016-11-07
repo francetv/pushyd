@@ -85,7 +85,7 @@ module PushyDaemon
       # Subscribe for each and every rule/route
       config_rules.each do |name, rule|
         rule[:name] = name
-        create_consumer rule
+        @consumers << create_consumer(rule)
       end
     end
 
@@ -120,8 +120,8 @@ module PushyDaemon
         @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s, status ]
       end
 
-      # Return it
-      @consumers << consumer
+      # Return consumer
+      consumer
     end
 
     def consumer_cancelled all={}
