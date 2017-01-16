@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   # Project description
   spec.name                         = "pushyd"
   spec.authors                      = ["Bruno MEDICI"]
-  spec.email                        = "pushyd@bmconseil.com"
+  spec.email                        = "opensource@bmconseil.com"
   spec.description                  = "A nice proxy listenning to a RabbitMQ bus, repeating selected messages in POST requests when filters match routing patterns"
   spec.summary                      = spec.description
   spec.homepage                     = "http://github.com/bmedici/pushyd"
