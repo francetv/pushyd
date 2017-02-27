@@ -8,3 +8,7 @@ DOC/
 .ruby-version
 local.yml
 /.idea
+
+Gemfile.lock
+.ruby-version
+.ruby-gemset
