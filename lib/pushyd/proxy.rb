@@ -18,7 +18,7 @@ module PushyDaemon
       # Init ASCII table
       @table = Terminal::Table.new
       @table.title = "Rules summary"
-      @table.headings = ["rule", "topic", "route", "relay", "description", "status"]
+      @table.headings = ["rule", "topic", "> queue", "> relay", "routing key", "bind status"]
       @table.align_column(5, :right)
 
       # Prepare logger
@@ -117,7 +117,7 @@ module PushyDaemon
         end
 
         # Add row to config table
-        @table.add_row [rule_name, rule_topic, route, rule[:relay].to_s, rule[:title].to_s, status ]
+        @table.add_row [rule_name, rule_topic, rule_queue, rule[:relay].to_s, key, status ]
       end
 
       # Return consumer
