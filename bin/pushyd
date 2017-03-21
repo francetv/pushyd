@@ -56,9 +56,9 @@ puts "Environment     \t #{Conf.app_env}"
 puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
 puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
-puts "Process name    \t #{Conf.generate(:process_name)}"
-puts "Newrelic        \t #{Conf.feature?(:newrelic) || '-'}"
-puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
+puts "Process name    \t #{Conf.generate_process_name}"
+puts "Newrelic        \t #{Conf.feature_newrelic? || '-'}"
+puts "Rollbar         \t #{Conf.feature_rollbar? || '-'}"
 if cmd_dump
   puts
   puts Conf.dump
@@ -73,7 +73,7 @@ monitor: false,
   dir_mode: :normal,
   dir: '/tmp/'
   }
-Daemons.run_proc(Conf.generate(:process_name), run_options) do
+Daemons.run_proc(Conf.generate_process_name, run_options) do
   # Load code
   Conf.prepare_newrelic
 

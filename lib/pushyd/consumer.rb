@@ -90,7 +90,7 @@ module PushyDaemon
       headers = {
         content_type: :json,
         accept: :json,
-        user_agent: BmcDaemonLib::Conf.generate(:user_agent),
+        user_agent: BmcDaemonLib::Conf.generate_user_agent,
         }
 
       # Compute: payload MD5, HMAC signature
