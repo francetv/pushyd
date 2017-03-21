@@ -116,11 +116,16 @@ module PushyDaemon
       # Bind each key to exchange
       rule_keys.each do |key|
         begin
-          status = "> #{rule_queue}"
-        rescue BmcDaemonLib::MqConsumerTopicNotFound => e
-          status = "! BIND FAILED"
-          log_error "Proxy consumer: #{e.message}"
           q = consumer.listen_to rule_topic, key
+        rescue BmcDaemonLib::MqConsumerTopicNotFound,
+               BmcDaemonLib::MqConsumerException => e
+          status = "FAILED: #{e.class} \n#{e.message}"
+          log_error "create_consumer [#{e.class}] #{e.message}"
+        rescue StandardError => e
+          status = "FAILED: #{e.message}"
+          log_error "create_consumer: #{e.message}"
+        else
+          status = "QUEUE #{q.object_id}"
         end
 
         # Add row to config table
