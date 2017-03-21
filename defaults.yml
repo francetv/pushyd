@@ -34,7 +34,14 @@ rollbar:
 #   proxy_tests:
 #     title: All proxy tests messages
 #     topic: proxy
-#     routes: "proxy.#"
+#     keys: proxy.#
+#     keys: proxy.key1, proxy.key2, proxy.key3
+    # keys: 
+    #     - proxy.key1
+    #     - proxy.key2
+    #     - proxy.key3
+#     keys: "proxy.#"
+#     keys: "proxy.#"
 #     subscribe: false
 #     #relay: http://requestb.in/1clzv7v1
 
