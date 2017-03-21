@@ -82,23 +82,30 @@ module PushyDaemon
       end
       log_info "create_consumers: #{config_rules.keys.join(', ')}"
 
-      # Subscribe for each and every rule/route
+      # Subscribe for each and every rule/key
       config_rules.each do |name, rule|
         rule[:name] = name
         @consumers << create_consumer(rule)
       end
     end
 
-    # Subscribe to interesting topic/routes and bind a listenner
+    # Subscribe to interesting topic/key and bind a listenner
     def create_consumer rule
       # Check information
       rule_name   = rule[:name].to_s
       rule_topic  = rule[:topic].to_s
-      rule_routes = rule[:routes].to_s.split(' ')
       rule_queue  = sprintf('%s-%s', BmcDaemonLib::Conf.app_name, rule_name.gsub('_', '-'))
 
+      # Extract routing keys
+      if rule[:keys].is_a? Array
+        rule_keys = rule[:keys].map(&:to_s)
+      else
+        rule_keys = rule[:keys].to_s.split(',').map(&:strip)
+      end
+
+      # Check we have a topic and at least one routing key
       fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
-      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking routes" if rule_routes.empty?
+      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking keys" if rule_keys.empty?
 
       # Build a new consumer
       consumer = Consumer.new(@conn, rule_name, rule)
@@ -106,14 +113,14 @@ module PushyDaemon
       # Subscribe to my own queue
       consumer.subscribe_to_queue rule_queue, "rule:#{rule_name}"
 
-      # Bind each route to exchange
-      rule_routes.each do |route|
+      # Bind each key to exchange
+      rule_keys.each do |key|
         begin
           status = "> #{rule_queue}"
-          consumer.listen_to rule_topic, route
         rescue BmcDaemonLib::MqConsumerTopicNotFound => e
           status = "! BIND FAILED"
           log_error "Proxy consumer: #{e.message}"
+          q = consumer.listen_to rule_topic, key
         end
 
         # Add row to config table
