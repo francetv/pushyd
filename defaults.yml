@@ -12,7 +12,7 @@ logs:
 
 shout:
   topic: pushyd
-  period: 10
+  period: 10.0
   keys:
     - tic
     - tac

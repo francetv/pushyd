@@ -31,7 +31,7 @@ module PushyDaemon
       # Extract information
       @shouter_keys = config_shout[:keys] if config_shout[:keys].is_a? Array
       @shouter_topic = config_shout[:topic]
-      @shouter_period = config_shout[:period].to_i
+      @shouter_period = config_shout[:period].to_f
       @shouter_period = 1 unless (@shouter_period > 0)
 
       fail PushyDaemon::EndpointTopicContext unless @shouter_topic
