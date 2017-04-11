@@ -20,8 +20,6 @@ module PushyDaemon
 
       # Init
       @shouter_keys = []
-      @exchange = nil
-
 
       # Check config
       unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
@@ -37,13 +35,17 @@ module PushyDaemon
 
       fail PushyDaemon::EndpointTopicContext unless @shouter_topic
 
+      # Create exchange
       @exchange = @channel.topic(@shouter_topic, durable: true, persistent: true)
+      #log_info "channel[#{@channel.id}] created, prefetch[#{AMQP_PREFETCH}]"
 
       # Start working, now
-      log_info "Shouter initialized, starting loop now", { topic: @shouter_topic, period: @shouter_period, keys: @shouter_keys }
+      log_info "shouter initialized"
     end
 
     def start_loop
+      log_info "shouter start_loop", { topic: @shouter_topic, period: @shouter_period, keys: @shouter_keys }
+
       # Prepare exchange
       loop do
         # Generate payload
