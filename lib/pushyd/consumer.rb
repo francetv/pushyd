@@ -14,7 +14,6 @@ module PushyDaemon
     def initialize(conn, rule_name, rule)
       # Init
       @queue = nil
-      @conn = conn
       @rule = rule
       @rule_name = rule_name
 

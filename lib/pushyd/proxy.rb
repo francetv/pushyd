@@ -25,8 +25,8 @@ module PushyDaemon
       @logger = BmcDaemonLib::LoggerPool.instance.get
 
       # Start connexion to RabbitMQ
-      @conn = connect_to BmcDaemonLib::Conf[:broker]
       log_info "Proxy connected"
+      connect_to BmcDaemonLib::Conf[:broker]
 
       # Create a new shouter
       @shouter = create_shouter
@@ -138,6 +138,34 @@ module PushyDaemon
 
     def consumer_cancelled all={}
       log_error "consumer_cancelled remotely: #{all.inspect}"
+    end
+
+    # Start connexion to RabbitMQ
+    def connect_to busconf
+      fail EndpointConnexionContext, "connect_to/busconf" unless busconf
+      log_info "connect_to: connecting to broker", {
+        broker: busconf,
+        recover: AMQP_RECOVERY_INTERVAL,
+        heartbeat: AMQP_HEARTBEAT_INTERVAL,
+        prefetch: AMQP_PREFETCH
+        }
+      @conn = Bunny.new busconf.to_s,
+        logger: @logger,
+        # heartbeat: :server,
+        automatically_recover: true,
+        network_recovery_interval: AMQP_RECOVERY_INTERVAL,
+        heartbeat_interval: AMQP_HEARTBEAT_INTERVAL,
+        read_write_timeout: AMQP_HEARTBEAT_INTERVAL*2
+
+      # Start the connection
+      @conn.start
+
+    rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
+      fail BmcDaemonLib::EndpointConnectionError, "error connecting (#{e.class})"
+    rescue StandardError => e
+      fail BmcDaemonLib::EndpointConnectionError, "unknow (#{e.inspect})"
+    else
+      #return conn
     end
 
   end
