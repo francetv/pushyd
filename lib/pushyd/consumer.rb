@@ -5,6 +5,7 @@ module PushyDaemon
   # class ShouterInterrupted         < StandardError; end
   class ConsumerError              < StandardError; end
   class ConsumerRuleMissing        < StandardError; end
+  class ConsumerSubscribeError     < StandardError; end
 
   class Consumer < BmcDaemonLib::MqConsumer
     #include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -127,7 +128,7 @@ module PushyDaemon
 
     # rescue StandardError => ex
     #   log_debug "channel_ackit[#{@channel.id}.#{tag}]: exception: #{ex.inspect}"
-    #   # fail PushyDaemon::EndpointSubscribeError, "unhandled (#{e.inspect})"
+    #   # fail PushyDaemon::ConsumerSubscribeError, "unhandled (#{e.inspect})"
 
     # else
     #   log_debug "channel_ackit[#{@channel.id}.#{tag}]: done"
