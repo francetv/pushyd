@@ -4,6 +4,10 @@ require 'rest_client'
 require 'terminal-table'
 
 module PushyDaemon
+  class EndpointConnexionContext    < StandardError; end
+  class ProxyConnectionError     < StandardError; end
+  class ProxyConsumerError    < StandardError; end
+
   class Proxy < BmcDaemonLib::MqEndpoint
     #include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
@@ -28,7 +32,7 @@ module PushyDaemon
       connect_to BmcDaemonLib::Conf[:broker]
 
       # Create a new shouter
-      @shouter = create_shouter
+      create_shouter
 
       # Check config and subscribe rules
       create_consumers
@@ -41,10 +45,10 @@ module PushyDaemon
       @shouter.start_loop
 
       rescue BmcDaemonLib::MqConsumerException => e
-        log_error "Proxy consumer: #{e.message}"
+        log_error "Proxy exception: #{e.message}"
         abort "EXITING #{e.class}: #{e.message}"
 
-      rescue ShouterInterrupted, EndpointConnectionError, Errno::EACCES => e
+      rescue ShouterInterrupted, ProxyConnectionError, Errno::EACCES => e
         log_error "Proxy error: #{e.message}"
         abort "EXITING #{e.class}: #{e.message}"
 
@@ -61,12 +65,9 @@ module PushyDaemon
       {
         me: :proxy
       }
-
     end
 
     def create_shouter
-      # Get config
-      config_shouter = BmcDaemonLib::Conf[:shout]
       # Create my channel
       channel = @conn.create_channel
 
@@ -105,14 +106,14 @@ module PushyDaemon
       end
 
       # Check we have a topic and at least one routing key
-      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
-      fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking keys" if rule_keys.empty?
+      fail BmcDaemonLib::ProxyConsumerError, "rule [#{rule_name}] lacking topic" unless rule_topic
+      fail BmcDaemonLib::ProxyConsumerError, "rule [#{rule_name}] lacking keys" if rule_keys.empty?
 
       # Build a new consumer on its own channel
       channel = @conn.create_channel
       consumer = Consumer.new(channel, rule_name, rule)
 
-      # Subscribe to my own queue
+      # Subscribe to its own queue
       consumer.subscribe_to_queue rule_queue, "rule:#{rule_name}"
 
       # Bind each key to exchange
@@ -144,7 +145,7 @@ module PushyDaemon
 
     # Start connexion to RabbitMQ
     def connect_to busconf
-      fail EndpointConnexionContext, "connect_to/busconf" unless busconf
+      fail ProxyConnectionError, "connect_to/busconf" unless busconf
       log_info "connect_to: connecting to broker", {
         broker: busconf,
         recover: AMQP_RECOVERY_INTERVAL,
@@ -163,9 +164,9 @@ module PushyDaemon
       @conn.start
 
     rescue Bunny::TCPConnectionFailedForAllHosts, Bunny::AuthenticationFailureError, AMQ::Protocol::EmptyResponseError  => e
-      fail BmcDaemonLib::EndpointConnectionError, "error connecting (#{e.class})"
+      fail ProxyConnectionError, "error connecting (#{e.class})"
     rescue StandardError => e
-      fail BmcDaemonLib::EndpointConnectionError, "unknow (#{e.inspect})"
+      fail ProxyConnectionError, "unknow (#{e.inspect})"
     else
       #return conn
     end
