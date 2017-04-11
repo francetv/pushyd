@@ -9,23 +9,16 @@ module PushyDaemon
   class Consumer < BmcDaemonLib::MqConsumer
     #include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include Shared::HmacSignature
-    attr_accessor :logger
 
-    def initialize(conn, rule_name, rule)
+    def initialize(channel, rule_name, rule)
+      # Init MqConsumer
+      log_pipe :consumer
+      super
+
       # Init
       @queue = nil
       @rule = rule
       @rule_name = rule_name
-
-      # Prepare logger
-      log_pipe :consumer
-
-      # Create channel, prefetch only one message at a time
-      @channel = @conn.create_channel
-      @channel.prefetch(AMQP_PREFETCH)
-
-      # OK
-      log_info "Consumer initialized"
     end
 
   protected
@@ -143,6 +136,5 @@ module PushyDaemon
     # NewRelic instrumentation
     #add_transaction_tracer :receive,        category: :task
     #add_transaction_tracer :propagate,      category: :task
-
   end
 end

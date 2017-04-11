@@ -7,20 +7,21 @@ module PushyDaemon
 
   class Shouter < BmcDaemonLib::MqEndpoint
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    include BmcDaemonLib::LoggerHelper
+    include LoggerHelper
+    attr_accessor :logger
 
     # Class options
     attr_accessor :table
-    attr_accessor :logger
 
-    def initialize(conn, config_shout)
+    def initialize(channel, config_shout)
+      # Init MqConsumer
+      log_pipe :shouter
+      super
+
       # Init
       @shouter_keys = []
-      @channel = nil
       @exchange = nil
 
-      # Prepare logger
-      log_pipe :shouter
 
       # Check config
       unless config_shout && config_shout.any? && config_shout.is_a?(Enumerable)
@@ -36,8 +37,6 @@ module PushyDaemon
 
       fail PushyDaemon::EndpointTopicContext unless @shouter_topic
 
-      # Create channel and exchange
-      @channel = conn.create_channel
       @exchange = @channel.topic(@shouter_topic, durable: true, persistent: true)
 
       # Start working, now

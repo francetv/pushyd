@@ -25,7 +25,6 @@ module PushyDaemon
       @logger = BmcDaemonLib::LoggerPool.instance.get
 
       # Start connexion to RabbitMQ
-      log_info "Proxy connected"
       connect_to BmcDaemonLib::Conf[:broker]
 
       # Create a new shouter
@@ -68,9 +67,11 @@ module PushyDaemon
     def create_shouter
       # Get config
       config_shouter = BmcDaemonLib::Conf[:shout]
+      # Create my channel
+      channel = @conn.create_channel
 
       # Create the shouter
-      Shouter.new(@conn, config_shouter)
+      @shouter = Shouter.new(channel, BmcDaemonLib::Conf[:shout])
     end
 
     def create_consumers
@@ -107,8 +108,9 @@ module PushyDaemon
       fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking topic" unless rule_topic
       fail PushyDaemon::EndpointSubscribeContext, "rule [#{rule_name}] lacking keys" if rule_keys.empty?
 
-      # Build a new consumer
-      consumer = Consumer.new(@conn, rule_name, rule)
+      # Build a new consumer on its own channel
+      channel = @conn.create_channel
+      consumer = Consumer.new(channel, rule_name, rule)
 
       # Subscribe to my own queue
       consumer.subscribe_to_queue rule_queue, "rule:#{rule_name}"
