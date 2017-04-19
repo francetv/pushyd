@@ -18,6 +18,7 @@ begin
   cmd_config = nil
   cmd_logfile = nil
   cmd_dump = nil
+  cmd_daemonize = nil
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
@@ -29,6 +30,8 @@ begin
     opts.on("-l", "--log LOGFILE")                                  { |path| cmd_logfile = File.expand_path(path.to_s)}
     opts.on("-c", "--config CONFIGFILE")                            { |path| cmd_config = File.expand_path(path.to_s)}
     opts.on("-e", "--environment ENV")                              { |env| Conf.app_env = env }
+    opts.on("-d", "--daemonize", "Run daemonized in the background"){ cmd_daemonize = true }
+    opts.on("-f", "--foreground", "Run in the foreground")          { cmd_daemonize = false }
     opts.on("",   "--dev")                                          { Conf.app_env = "development" }
     opts.on("",   "--dump", "Dump config as seen by the process")   { |value| cmd_dump = true }
   end
@@ -55,6 +58,7 @@ puts "--- #{Conf.app_name} #{Conf.app_ver}"
 puts "Environment     \t #{Conf.app_env}"
 puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
+puts "Daemonize       \t #{cmd_daemonize}"
 puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
 puts "Process name    \t #{Conf.generate_process_name}"
 puts "Newrelic        \t #{Conf.feature_newrelic? || '-'}"
@@ -66,8 +70,8 @@ end
 
 # Run daemon
 run_options = {
-monitor: false,
-  ontop: false,
+  monitor: false,
+  ontop: !cmd_daemonize,
   backtrace: true,
   multiple: false,
   dir_mode: :normal,
