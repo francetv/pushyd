@@ -29,13 +29,13 @@ Gem::Specification.new do |spec|
 
   # Runtime dependencies
   # spec.add_runtime_dependency       "bmc-daemon-lib"
-  spec.add_runtime_dependency       "bmc-daemon-lib", "= 0.10.2"
+  spec.add_runtime_dependency       "bmc-daemon-lib", "~> 0.10"
   spec.add_runtime_dependency       "daemons"
   spec.add_runtime_dependency       "json"
   spec.add_runtime_dependency       "bunny", "~> 2.3"
   spec.add_runtime_dependency       "rest-client", "~> 1.8"
   spec.add_runtime_dependency       "api-auth"
   spec.add_runtime_dependency       "terminal-table"
-  spec.add_runtime_dependency       "newrelic_rpm"
+  spec.add_runtime_dependency       "newrelic_rpm", "~> 4.0"
   spec.add_runtime_dependency       "rollbar"
 end
