@@ -19,7 +19,6 @@ begin
   cmd_logfile = nil
   cmd_dump = nil
   cmd_daemonize = nil
-  access_token = nil
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
