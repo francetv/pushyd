@@ -86,6 +86,8 @@ module PushyDaemon
         user_agent: BmcDaemonLib::Conf.generate_user_agent,
         }
 
+      headers[:Authorization] = ENV['RELAY_ACCESS_TOKEN'] unless ENV['RELAY_ACCESS_TOKEN'].blank?
+
       # Compute: payload MD5, HMAC signature
       headers_md5 headers, request_body
       headers_sign headers, @rule[:sign]

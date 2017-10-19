@@ -19,6 +19,7 @@ begin
   cmd_logfile = nil
   cmd_dump = nil
   cmd_daemonize = nil
+  access_token = nil
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
@@ -32,6 +33,7 @@ begin
     opts.on("-e", "--environment ENV")                              { |env| Conf.app_env = env }
     opts.on("-d", "--daemonize", "Run daemonized in the background"){ cmd_daemonize = true }
     opts.on("-f", "--foreground", "Run in the foreground")          { cmd_daemonize = false }
+    opts.on("-t", "--token TOKEN")                                  { |token| ENV['RELAY_ACCESS_TOKEN'] = token }
     opts.on("",   "--dev")                                          { Conf.app_env = "development" }
     opts.on("",   "--dump", "Dump config as seen by the process")   { |value| cmd_dump = true }
   end
@@ -56,6 +58,7 @@ end
 # Display final configuration, quit if config dump requested
 puts "--- #{Conf.app_name} #{Conf.app_ver}"
 puts "Environment     \t #{Conf.app_env}"
+puts "Access Token    \t #{ENV['RELAY_ACCESS_TOKEN']}"
 puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
 puts "Daemonize       \t #{cmd_daemonize}"
