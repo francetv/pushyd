@@ -86,17 +86,31 @@ module PushyDaemon
         user_agent: BmcDaemonLib::Conf.generate_user_agent,
         }
 
-      headers[:Authorization] = ENV['RELAY_ACCESS_TOKEN'] unless ENV['RELAY_ACCESS_TOKEN'].blank?
+      ENV['HEADERS'].split('|').each do |header|
+
+        h_key = header.split(':').first
+        h_vakue = header.split(':').last
+        headers[h_key] = h_value
+
+      end unless ENV['HEADERS'].blank?
 
       # Compute: payload MD5, HMAC signature
       headers_md5 headers, request_body
       headers_sign headers, @rule[:sign]
 
+
+      request_params = {
+        url:      relay_url,
+        method:   :post,
+        payload:  request_body,
+        headers:  headers,
+        user:     ENV['USER'],
+        password: ENV['PASS']
+      }
+
       # Build final request
-      request = RestClient::Request.new url: relay_url,
-        method: :post,
-        payload: request_body,
-        headers: headers
+      request = RestClient::Request.new request_params
+
 
       # Execute request
       log_message MSG_RLAY, request_id, relay_url, request_infos, request.processed_headers
