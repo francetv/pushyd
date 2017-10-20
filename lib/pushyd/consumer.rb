@@ -87,10 +87,7 @@ module PushyDaemon
         }
 
       # merge context headers
-      context_key     = context.split(':').last
-      context_conf    =  BmcDaemonLib::Conf[:rules].send(context_key)
-      context_headers = context_conf.headers unless context_conf.blank?
-      context_headers.each{|k, v| headers[k] = v } unless context_headers.nil?
+      @rule.headers.each{|k, v| headers[k] = v } unless @rule.headers.nil?
       
       # Compute: payload MD5, HMAC signature
       headers_md5 headers, request_body
