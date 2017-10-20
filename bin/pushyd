@@ -19,7 +19,6 @@ begin
   cmd_logfile = nil
   cmd_dump = nil
   cmd_daemonize = nil
-  headers = []
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
@@ -33,9 +32,6 @@ begin
     opts.on("-e", "--environment ENV")                              { |env| Conf.app_env = env }
     opts.on("-d", "--daemonize", "Run daemonized in the background"){ cmd_daemonize = true }
     opts.on("-f", "--foreground", "Run in the foreground")          { cmd_daemonize = false }
-    opts.on("-u", "--user USER")                                    { |user| ENV['USER'] = user }
-    opts.on("-p", "--pass PASS")                                    { |pass| ENV['PASS'] = pass }
-    opts.on("-h", "--headers a,b,c", Array, "Array of headers")     { |head|  headers = head }
     opts.on("",   "--dev")                                          { Conf.app_env = "development" }
     opts.on("",   "--dump", "Dump config as seen by the process")   { |value| cmd_dump = true }
   end
@@ -57,15 +53,9 @@ rescue StandardError => e
 else
 end
 
-#set headers array on env variable
-ENV['HEADERS'] = headers.join('|')
-
 # Display final configuration, quit if config dump requested
 puts "--- #{Conf.app_name} #{Conf.app_ver}"
 puts "Environment     \t #{Conf.app_env}"
-puts "User            \t #{ENV['USER']}"
-puts "Password        \t #{ENV['PASS']}"
-puts "Headers         \t #{headers}"
 puts "Config files    \t #{Conf.files}"
 puts "Started at      \t #{Conf.app_started}"
 puts "Daemonize       \t #{cmd_daemonize}"

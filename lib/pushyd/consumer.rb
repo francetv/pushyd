@@ -86,13 +86,10 @@ module PushyDaemon
         user_agent: BmcDaemonLib::Conf.generate_user_agent,
         }
 
-      ENV['HEADERS'].split('|').each do |header|
-
-        h_key = header.split(':').first
-        h_vakue = header.split(':').last
-        headers[h_key] = h_value
-
-      end unless ENV['HEADERS'].blank?
+      # merge context headers
+      context_key     = context.split(':').last
+      context_headers = BmcDaemonLib::Conf[:rules].send(context_key).headers
+      context_headers.each{|k, v| headers[k] = v } unless context_headers.blank?
 
       # Compute: payload MD5, HMAC signature
       headers_md5 headers, request_body
@@ -104,8 +101,6 @@ module PushyDaemon
         method:   :post,
         payload:  request_body,
         headers:  headers,
-        user:     ENV['USER'],
-        password: ENV['PASS']
       }
 
       # Build final request
