@@ -18,3 +18,5 @@ require_relative "pushyd/shouter"
 
 # Init
 require_relative "pushyd/initialize"
+
+require_relative "shared/custom_modules"
